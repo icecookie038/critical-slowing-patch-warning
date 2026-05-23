@@ -9,3 +9,4 @@ tqdm
 networkx
 statsmodels
 pyyaml
+tabulate
