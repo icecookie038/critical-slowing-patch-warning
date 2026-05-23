@@ -43,3 +43,8 @@ Thumbs.db
 
 # Ignore all model outputs
 models/
+# Script-generated experiment data
+scripts/data/
+scripts/results/
+scripts/models/
+scripts/results_baselines/
