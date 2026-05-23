@@ -1,0 +1,45 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# PyCharm / VSCode
+.idea/
+.vscode/
+
+# Large generated data
+data/*.npz
+data/*.npy
+data/raw/
+data/cache/
+
+# Results
+results/
+results_baselines/
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# Model weights
+models/*.pth
+models/*.pt
+models/*.pkl
+models/*.joblib
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Ignore all model outputs
+models/
