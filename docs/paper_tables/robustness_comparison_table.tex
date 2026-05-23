@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\centering
+\caption{Robustness comparison across input modes and baseline models.}
+\label{tab:robustness_comparison}
+\begin{tabular}{llllllll}
+\hline
+Model & Input mode & AUC & AUPRC & F1 & Precision & Recall & Lead time \\
+\hline
+Deep model & Full & 0.885 $\pm$ 0.020 & 0.856 $\pm$ 0.030 & 0.773 $\pm$ 0.036 & 0.735 $\pm$ 0.045 & 0.815 $\pm$ 0.025 & 14.230 $\pm$ 0.095 \\
+Deep model & Image-only & 0.869 $\pm$ 0.017 & 0.830 $\pm$ 0.034 & 0.755 $\pm$ 0.033 & 0.704 $\pm$ 0.029 & 0.816 $\pm$ 0.050 & 14.040 $\pm$ 0.235 \\
+Deep model & Patch-only & 0.886 $\pm$ 0.018 & 0.853 $\pm$ 0.032 & 0.775 $\pm$ 0.031 & 0.760 $\pm$ 0.095 & 0.800 $\pm$ 0.060 & 14.063 $\pm$ 0.286 \\
+ExtraTrees & Patch statistics & 0.853 $\pm$ 0.005 & 0.812 $\pm$ 0.019 & 0.742 $\pm$ 0.014 & 0.691 $\pm$ 0.026 & 0.803 $\pm$ 0.004 & 14.003 $\pm$ 0.059 \\
+RandomForest & Patch statistics & 0.852 $\pm$ 0.007 & 0.809 $\pm$ 0.014 & 0.738 $\pm$ 0.019 & 0.693 $\pm$ 0.042 & 0.790 $\pm$ 0.013 & 13.952 $\pm$ 0.115 \\
+HistGradientBoosting & Patch statistics & 0.851 $\pm$ 0.017 & 0.814 $\pm$ 0.013 & 0.739 $\pm$ 0.010 & 0.695 $\pm$ 0.026 & 0.791 $\pm$ 0.028 & 14.004 $\pm$ 0.090 \\
+LogisticRegression & Patch statistics & 0.848 $\pm$ 0.011 & 0.807 $\pm$ 0.023 & 0.731 $\pm$ 0.005 & 0.659 $\pm$ 0.023 & 0.824 $\pm$ 0.033 & 14.202 $\pm$ 0.176 \\
+MLP & Patch statistics & 0.800 $\pm$ 0.029 & 0.763 $\pm$ 0.019 & 0.697 $\pm$ 0.008 & 0.694 $\pm$ 0.029 & 0.703 $\pm$ 0.045 & 13.658 $\pm$ 0.331 \\
+\hline
+\end{tabular}
+\end{table}
