@@ -1,6 +1,7 @@
 from pathlib import Path
 import re
 import pandas as pd
+import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -8,13 +9,24 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULT_DIRS = [
     ROOT / "results",
     ROOT / "results_baselines",
+    ROOT / "scripts" / "results",
+    ROOT / "scripts" / "results_baselines",
 ]
 
 OUT_DIR = ROOT / "results_summary"
 OUT_DIR.mkdir(exist_ok=True)
 
 
-METRIC_KEYS = [
+OUTPUT_ALL = OUT_DIR / "robustness_summary_all.csv"
+OUTPUT_GROUPED = OUT_DIR / "robustness_summary_grouped.csv"
+
+
+COLUMN_ORDER = [
+    "Source_File",
+    "Result_Type",
+    "Seed",
+    "Horizon",
+    "Feature_Mode",
     "AUC",
     "AUPRC",
     "ACC",
@@ -31,171 +43,203 @@ METRIC_KEYS = [
     "LeadTime_Median",
     "LeadTime_Q25",
     "LeadTime_Q75",
+    "Model",
 ]
 
 
-def extract_from_name(path: Path) -> dict:
-    text = str(path)
+METRIC_NAME_MAP = {
+    "auc": "AUC",
+    "auprc": "AUPRC",
+    "acc": "ACC",
+    "accuracy": "ACC",
+    "f1": "F1",
+    "precision": "Precision",
+    "recall": "Recall",
+    "best threshold": "Best_Threshold",
+    "best_threshold": "Best_Threshold",
+    "positive rate": "Positive_Rate",
+    "positive_rate": "Positive_Rate",
+    "tn": "TN",
+    "fp": "FP",
+    "fn": "FN",
+    "tp": "TP",
+    "leadtime mean": "LeadTime_Mean",
+    "leadtime_mean": "LeadTime_Mean",
+    "leadtime median": "LeadTime_Median",
+    "leadtime_median": "LeadTime_Median",
+    "leadtime q25": "LeadTime_Q25",
+    "leadtime_q25": "LeadTime_Q25",
+    "leadtime q75": "LeadTime_Q75",
+    "leadtime_q75": "LeadTime_Q75",
+}
 
-    seed_match = re.search(r"seed(\d+)", text)
-    h_match = re.search(r"_h(\d+)", text)
-    mode_match = re.search(r"mode([A-Za-z0-9_]+)", text)
 
-    seed = int(seed_match.group(1)) if seed_match else None
-    horizon = int(h_match.group(1)) if h_match else None
-    mode = mode_match.group(1) if mode_match else None
+def safe_float(value):
+    value = str(value).strip()
+    value = value.replace("%", "")
+    try:
+        return float(value)
+    except ValueError:
+        return np.nan
 
-    if mode is not None:
-        mode = mode.replace("_rw0", "")
-        mode = mode.replace("_wd0", "")
+
+def normalize_metric_key(key):
+    key = key.strip().lower()
+    key = key.replace("_", " ")
+    key = re.sub(r"\s+", " ", key)
+    return key
+
+
+def parse_validation_metrics(metric_file: Path) -> dict:
+    metrics = {}
+
+    try:
+        lines = metric_file.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except Exception as e:
+        print(f"[warning] failed to read {metric_file}: {e}")
+        return metrics
+
+    for line in lines:
+        if ":" not in line:
+            continue
+
+        raw_key, raw_value = line.split(":", 1)
+        key_norm = normalize_metric_key(raw_key)
+
+        if key_norm in METRIC_NAME_MAP:
+            col = METRIC_NAME_MAP[key_norm]
+            metrics[col] = safe_float(raw_value)
+
+    return metrics
+
+
+def extract_info_from_path(metric_file: Path) -> dict:
+    folder_name = metric_file.parent.name
+
+    seed = np.nan
+    horizon = np.nan
+    feature_mode = "unknown"
+
+    seed_match = re.search(r"seed(\d+)", folder_name, flags=re.IGNORECASE)
+    if seed_match:
+        seed = int(seed_match.group(1))
+
+    horizon_match = re.search(r"(?:^|_)h(\d+)(?:_|$)", folder_name, flags=re.IGNORECASE)
+    if horizon_match:
+        horizon = int(horizon_match.group(1))
+
+    mode_match = re.search(
+        r"_mode(full|img_only|patch_only)(?:_|$)",
+        folder_name,
+        flags=re.IGNORECASE,
+    )
+    if mode_match:
+        feature_mode = mode_match.group(1)
+
+    try:
+        source_file = str(metric_file.parent.relative_to(ROOT))
+    except ValueError:
+        source_file = str(metric_file.parent)
 
     return {
+        "Source_File": source_file,
+        "Result_Type": "deep_model",
         "Seed": seed,
         "Horizon": horizon,
-        "Feature_Mode": mode,
+        "Feature_Mode": feature_mode,
+        "Model": np.nan,
     }
 
 
-def parse_summary_txt(path: Path) -> dict:
-    record = {
-        "Source_File": str(path.relative_to(ROOT)),
-        "Result_Type": "deep_model",
-    }
-    record.update(extract_from_name(path))
+def collect_metric_files():
+    metric_files = []
 
-    text = path.read_text(encoding="utf-8", errors="ignore")
-
-    patterns = {
-        "AUC": r"AUC:\s*([0-9.]+)",
-        "AUPRC": r"AUPRC:\s*([0-9.]+)",
-        "ACC": r"ACC:\s*([0-9.]+)",
-        "F1": r"F1:\s*([0-9.]+)",
-        "Precision": r"Precision:\s*([0-9.]+)",
-        "Recall": r"Recall:\s*([0-9.]+)",
-        "Best_Threshold": r"Best_Threshold:\s*([0-9.]+)",
-        "Positive_Rate": r"Positive_Rate:\s*([0-9.]+)",
-        "TN": r"TN:\s*([0-9.]+)",
-        "FP": r"FP:\s*([0-9.]+)",
-        "FN": r"FN:\s*([0-9.]+)",
-        "TP": r"TP:\s*([0-9.]+)",
-        "LeadTime_Mean": r"LeadTime_Mean:\s*([0-9.]+)",
-        "LeadTime_Median": r"LeadTime_Median:\s*([0-9.]+)",
-        "LeadTime_Q25": r"LeadTime_Q25:\s*([0-9.]+)",
-        "LeadTime_Q75": r"LeadTime_Q75:\s*([0-9.]+)",
-    }
-
-    for key, pattern in patterns.items():
-        match = re.search(pattern, text)
-        record[key] = float(match.group(1)) if match else None
-
-    return record
-
-
-def collect_deep_results() -> pd.DataFrame:
-    rows = []
-
-    for results_dir in RESULT_DIRS:
-        if not results_dir.exists():
+    for result_dir in RESULT_DIRS:
+        if not result_dir.exists():
+            print(f"[skip] missing directory: {result_dir}")
             continue
 
-        for path in results_dir.rglob("*final_summary.txt"):
-            rows.append(parse_summary_txt(path))
+        found = list(result_dir.rglob("validation_metrics.txt"))
+        print(f"[scan] {result_dir} -> found {len(found)} validation_metrics.txt")
+        metric_files.extend(found)
 
-    return pd.DataFrame(rows)
+    return metric_files
 
 
-def collect_baseline_results() -> pd.DataFrame:
+def main():
+    metric_files = collect_metric_files()
+
+    print(f"\nTotal metric files found: {len(metric_files)}")
+
     rows = []
 
-    baseline_root = ROOT / "results_baselines"
-    if not baseline_root.exists():
-        return pd.DataFrame()
+    for metric_file in metric_files:
+        print(f"[read] {metric_file}")
 
-    for csv_path in baseline_root.rglob("baseline_metrics.csv"):
-        try:
-            df = pd.read_csv(csv_path)
-        except Exception:
-            continue
+        row = extract_info_from_path(metric_file)
+        metrics = parse_validation_metrics(metric_file)
 
-        for _, row in df.iterrows():
-            record = {
-                "Source_File": str(csv_path.relative_to(ROOT)),
-                "Result_Type": "baseline",
-                "Model": row.get("Model", None),
-                "Feature_Mode": row.get("Feature_Mode", None),
-                "Seed": row.get("Seed", None),
-                "Horizon": row.get("Horizon", None),
-            }
+        row.update(metrics)
+        rows.append(row)
 
-            for key in METRIC_KEYS:
-                record[key] = row.get(key, None)
+    if not rows:
+        print("No metric files collected. Nothing to save.")
+        return
 
-            rows.append(record)
+    df = pd.DataFrame(rows)
 
-    return pd.DataFrame(rows)
+    for col in COLUMN_ORDER:
+        if col not in df.columns:
+            df[col] = np.nan
 
+    df = df[COLUMN_ORDER]
 
-def summarize(df: pd.DataFrame) -> pd.DataFrame:
-    metric_cols = [
+    df = df.sort_values(
+        by=["Seed", "Feature_Mode", "Horizon", "Source_File"],
+        na_position="last",
+    )
+
+    df.to_csv(OUTPUT_ALL, index=False, encoding="utf-8-sig")
+
+    numeric_cols = [
         "AUC",
         "AUPRC",
         "ACC",
         "F1",
         "Precision",
         "Recall",
+        "Best_Threshold",
+        "Positive_Rate",
         "LeadTime_Mean",
         "LeadTime_Median",
         "LeadTime_Q25",
         "LeadTime_Q75",
     ]
 
-    group_cols = ["Result_Type", "Model", "Feature_Mode"]
+    grouped_cols = ["Result_Type", "Horizon", "Feature_Mode"]
 
-    existing_group_cols = [c for c in group_cols if c in df.columns]
-    existing_metric_cols = [c for c in metric_cols if c in df.columns]
-
-    if df.empty or not existing_metric_cols:
-        return pd.DataFrame()
-
-    summary = (
-        df.groupby(existing_group_cols, dropna=False)[existing_metric_cols]
+    grouped = (
+        df.groupby(grouped_cols, dropna=False)[numeric_cols]
         .agg(["mean", "std", "count"])
         .reset_index()
     )
 
-    summary.columns = [
-        "_".join([str(x) for x in col if str(x) != ""])
-        for col in summary.columns.to_flat_index()
+    grouped.columns = [
+        "_".join([str(x) for x in col if str(x) != ""]).strip("_")
+        for col in grouped.columns
     ]
 
-    return summary
+    grouped.to_csv(OUTPUT_GROUPED, index=False, encoding="utf-8-sig")
 
+    print("\nRobustness result collection finished.")
+    print(f"Saved all results to: {OUTPUT_ALL}")
+    print(f"Saved grouped summary to: {OUTPUT_GROUPED}")
 
-def main():
-    deep_df = collect_deep_results()
-    baseline_df = collect_baseline_results()
+    print("\nPreview:")
+    print(df.head(20))
 
-    all_df = pd.concat([deep_df, baseline_df], ignore_index=True, sort=False)
-
-    if all_df.empty:
-        print("No result files found.")
-        print("Please check whether results/ or results_baselines/ contains final_summary.txt or baseline_metrics.csv.")
-        return
-
-    all_path = OUT_DIR / "robustness_summary_all.csv"
-    grouped_path = OUT_DIR / "robustness_summary_grouped.csv"
-
-    all_df.to_csv(all_path, index=False, encoding="utf-8-sig")
-
-    grouped_df = summarize(all_df)
-    grouped_df.to_csv(grouped_path, index=False, encoding="utf-8-sig")
-
-    print("Robustness result collection finished.")
-    print(f"Saved all results to: {all_path}")
-    print(f"Saved grouped summary to: {grouped_path}")
-    print()
-    print("Preview:")
-    print(all_df.head())
+    print("\nSeeds collected:")
+    print(sorted(df["Seed"].dropna().unique()))
 
 
 if __name__ == "__main__":
