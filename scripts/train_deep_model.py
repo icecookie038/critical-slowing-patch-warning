@@ -2,9 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import csv
 import argparse
 from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 import numpy as np
 import matplotlib
@@ -32,6 +41,8 @@ from sklearn.metrics import (
 from tqdm import tqdm
 
 from seir_model import generate_patch_dataset
+from features.dynamic_patch_indicators import extract_dynamic_feature_matrix
+from features.feature_groups import get_dynamic_columns
 
 
 # =========================
@@ -45,7 +56,14 @@ DEFAULT_HORIZON = 30
 
 EARLY_STOP_PATIENCE = 12
 MIN_EPOCHS = 5
-
+FEATURE_GROUPS = [
+    "legacy",
+    "image_only",
+    "classic_patch_only",
+    "dynamic_patch_only",
+    "classic_dynamic_patch",
+    "full",
+]
 
 # =========================
 # 随机种子
@@ -489,7 +507,161 @@ def standardize_patch_features(X_patch, tr_idx):
     ).astype(np.float32)
 
     return X_patch_norm, mean.astype(np.float32), std.astype(np.float32)
+def build_dynamic_patch_sequence_features(
+    X_img,
+    threshold=0.5,
+    baseline_end=3,
+    mode="expansion",
+):
+    """
+    Build dynamic patch feature sequence from image sequence.
 
+    Input:
+        X_img shape: (N, T, C, H, W)
+
+    Output:
+        X_dynamic shape: (N, T, 4)
+
+    For SEIR expansion, the dynamic features are:
+        PDSI + DPCI + FAI + PSII
+
+    DPCR is computed inside dynamic_patch_indicators.py,
+    but it is not used as the main SEIR expansion feature.
+    """
+    if X_img.ndim != 5:
+        raise ValueError(f"X_img must have shape (N,T,C,H,W), got {X_img.shape}")
+
+    n_samples, seq_len, channels, height, width = X_img.shape
+
+    dynamic_columns = get_dynamic_columns(mode=mode)
+
+    dynamic_features = []
+
+    for i in range(n_samples):
+        # Use the first channel as the infection field / binary mask.
+        field_series = X_img[i, :, 0, :, :]
+
+        _, df = extract_dynamic_feature_matrix(
+            field_series=field_series,
+            threshold=threshold,
+            positive=True,
+            connectivity=8,
+            lag=1,
+            mode=mode,
+            baseline_end=baseline_end,
+            feature_columns=dynamic_columns,
+        )
+
+        feature_matrix = df[dynamic_columns].to_numpy(dtype=np.float32)
+
+        if feature_matrix.shape[0] != seq_len:
+            raise RuntimeError(
+                f"Dynamic feature length mismatch: expected {seq_len}, "
+                f"got {feature_matrix.shape[0]}"
+            )
+
+        dynamic_features.append(feature_matrix)
+
+    X_dynamic = np.stack(dynamic_features, axis=0).astype(np.float32)
+
+    X_dynamic = np.nan_to_num(
+        X_dynamic,
+        nan=0.0,
+        posinf=0.0,
+        neginf=0.0,
+    )
+
+    return X_dynamic
+def apply_feature_group_to_dataset(
+    X_img,
+    X_patch,
+    feature_group="legacy",
+    input_mode="full",
+):
+    """
+    Convert original v0.7 dataset into v0.9 feature-group dataset.
+
+    Original dataset:
+        X_img   = image sequence
+        X_patch = classic patch features
+
+    v0.9 groups:
+        image_only:
+            image + zero classic patch
+
+        classic_patch_only:
+            zero image + classic patch
+
+        dynamic_patch_only:
+            zero image + dynamic patch
+
+        classic_dynamic_patch:
+            zero image + classic + dynamic patch
+
+        full:
+            image + classic + dynamic patch
+
+    legacy:
+        keep original v0.7 behavior.
+    """
+    if feature_group == "legacy":
+        return X_img, X_patch, input_mode
+
+    if feature_group not in [
+        "image_only",
+        "classic_patch_only",
+        "dynamic_patch_only",
+        "classic_dynamic_patch",
+        "full",
+    ]:
+        raise ValueError(f"Unknown feature_group: {feature_group}")
+
+    print()
+    print(f"Building v0.9 feature group: {feature_group}")
+
+    X_dynamic = build_dynamic_patch_sequence_features(
+        X_img=X_img,
+        threshold=0.5,
+        baseline_end=max(3, min(5, X_img.shape[1] // 2)),
+        mode="expansion",
+    )
+
+    if feature_group == "image_only":
+        new_X_img = X_img
+        new_X_patch = np.zeros_like(X_patch)
+        new_input_mode = "img_only"
+
+    elif feature_group == "classic_patch_only":
+        new_X_img = np.zeros_like(X_img)
+        new_X_patch = X_patch
+        new_input_mode = "patch_only"
+
+    elif feature_group == "dynamic_patch_only":
+        new_X_img = np.zeros_like(X_img)
+        new_X_patch = X_dynamic
+        new_input_mode = "patch_only"
+
+    elif feature_group == "classic_dynamic_patch":
+        new_X_img = np.zeros_like(X_img)
+        new_X_patch = np.concatenate([X_patch, X_dynamic], axis=-1)
+        new_input_mode = "patch_only"
+
+    elif feature_group == "full":
+        new_X_img = X_img
+        new_X_patch = np.concatenate([X_patch, X_dynamic], axis=-1)
+        new_input_mode = "full"
+
+    else:
+        raise RuntimeError(f"Unhandled feature_group: {feature_group}")
+
+    print(f"Original X_img:   {X_img.shape}")
+    print(f"Original X_patch: {X_patch.shape}")
+    print(f"Dynamic X_patch:  {X_dynamic.shape}")
+    print(f"New X_img:        {new_X_img.shape}")
+    print(f"New X_patch:      {new_X_patch.shape}")
+    print(f"Model input_mode: {new_input_mode}")
+
+    return new_X_img, new_X_patch, new_input_mode
 
 # =========================
 # 评估
@@ -779,6 +951,8 @@ def append_experiment_summary(summary_path, args, metrics, result_dir):
         "seq_len",
         "horizon",
         "input_mode",
+        "feature_group",
+        "effective_input_mode",
         "reg_weight",
         "cls_weight",
         "dropout",
@@ -805,6 +979,8 @@ def append_experiment_summary(summary_path, args, metrics, result_dir):
         "seq_len": args.seq_len,
         "horizon": args.horizon,
         "input_mode": args.input_mode,
+        "feature_group": getattr(args, "feature_group", "legacy"),
+        "effective_input_mode": getattr(args, "effective_input_mode", args.input_mode),
         "reg_weight": args.reg_weight,
         "cls_weight": args.cls_weight,
         "dropout": args.dropout,
@@ -858,6 +1034,17 @@ def main():
 
     parser.add_argument("--input-mode", type=str, default="full",
                         choices=["full", "img_only", "patch_only"])
+    parser.add_argument(
+        "--feature-group",
+        type=str,
+        default="legacy",
+        choices=FEATURE_GROUPS,
+        help=(
+            "v0.9 feature group. Use legacy to keep v0.7 behavior. "
+            "Options: image_only, classic_patch_only, dynamic_patch_only, "
+            "classic_dynamic_patch, full."
+        ),
+    )
 
     parser.add_argument("--use-pos-weight", action="store_true")
     parser.add_argument("--device", type=str, default="auto", choices=["auto", "cpu", "cuda"])
@@ -876,16 +1063,28 @@ def main():
     data_dir = root_dir / "data"
     model_dir = root_dir / "models"
 
-    run_name = (
-        f"seed{args.seed}_"
-        f"sims{args.num_sims}_"
-        f"L{args.grid}_"
-        f"steps{args.sim_steps}_"
-        f"h{args.horizon}_"
-        f"mode{args.input_mode}_"
-        f"rw{args.reg_weight}_"
-        f"wd{args.weight_decay}"
-    )
+    if args.feature_group == "legacy":
+        run_name = (
+            f"seed{args.seed}_"
+            f"sims{args.num_sims}_"
+            f"L{args.grid}_"
+            f"steps{args.sim_steps}_"
+            f"h{args.horizon}_"
+            f"mode{args.input_mode}_"
+            f"rw{args.reg_weight}_"
+            f"wd{args.weight_decay}"
+        )
+    else:
+        run_name = (
+            f"seed{args.seed}_"
+            f"sims{args.num_sims}_"
+            f"L{args.grid}_"
+            f"steps{args.sim_steps}_"
+            f"h{args.horizon}_"
+            f"group{args.feature_group}_"
+            f"rw{args.reg_weight}_"
+            f"wd{args.weight_decay}"
+        )
 
     base_result_dir = root_dir / "results"
     result_dir = base_result_dir / run_name
@@ -1014,6 +1213,20 @@ def main():
     )
 
     print("\nAfter cleaning:")
+    X_img, X_patch, effective_input_mode = apply_feature_group_to_dataset(
+        X_img=X_img,
+        X_patch=X_patch,
+        feature_group=args.feature_group,
+        input_mode=args.input_mode,
+    )
+
+    print()
+    print("After feature group construction:")
+    print(f"Feature group: {args.feature_group}")
+    print(f"Effective input_mode: {effective_input_mode}")
+    print(f"X_img:   {X_img.shape}")
+    print(f"X_patch: {X_patch.shape}")
+    args.effective_input_mode = effective_input_mode
     print(f"X_img:       {X_img.shape}")
     print(f"X_patch:     {X_patch.shape}")
     print(f"y_remaining: {y_remaining.shape}")
@@ -1088,7 +1301,7 @@ def main():
         cnn_out_dim=64,
         rnn_hidden=64,
         dropout=args.dropout,
-        input_mode=args.input_mode,
+        input_mode=effective_input_mode,
     )
 
     if args.use_pos_weight:
@@ -1108,6 +1321,8 @@ def main():
     print(f"reg_weight: {args.reg_weight}")
     print(f"cls_weight: {args.cls_weight}")
     print(f"input_mode: {args.input_mode}")
+    print(f"feature_group: {args.feature_group}")
+    print(f"effective_input_mode: {effective_input_mode}")
 
     trainer = Trainer(
         model=model,
