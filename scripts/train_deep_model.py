@@ -43,7 +43,10 @@ from tqdm import tqdm
 from seir_model import generate_patch_dataset
 from features.dynamic_patch_indicators import extract_dynamic_feature_matrix
 from features.feature_groups import get_dynamic_columns
-
+from features.dynamic_patch_v2_indicators import (
+    extract_dynamic_patch_v2_feature_matrix,
+    DYNAMIC_PATCH_V2_COLUMNS,
+)
 
 # =========================
 # 默认参数
@@ -63,6 +66,8 @@ FEATURE_GROUPS = [
     "dynamic_patch_only",
     "classic_dynamic_patch",
     "full",
+    "dynamic_patch_v2_only",
+    "classic_dynamic_v2_patch",
 ]
 
 # =========================
@@ -572,6 +577,60 @@ def build_dynamic_patch_sequence_features(
     )
 
     return X_dynamic
+def build_dynamic_patch_v2_sequence_features(
+    X_img,
+    threshold=0.5,
+    mode="expansion",
+):
+    """
+    Build dynamic patch v2 feature sequence from image sequence.
+
+    Input:
+        X_img shape: (N, T, C, H, W)
+
+    Output:
+        X_dynamic_v2 shape: (N, T, 5)
+
+    v2 features:
+        BCI + FPV + PMR + GCGR + PPI
+    """
+    if X_img.ndim != 5:
+        raise ValueError(f"X_img must have shape (N,T,C,H,W), got {X_img.shape}")
+
+    n_samples, seq_len, channels, height, width = X_img.shape
+
+    dynamic_features = []
+
+    for i in range(n_samples):
+        field_series = X_img[i, :, 0, :, :]
+
+        feature_matrix, _ = extract_dynamic_patch_v2_feature_matrix(
+            field_series=field_series,
+            threshold=threshold,
+            positive=True,
+            connectivity=8,
+            lag=1,
+            feature_columns=DYNAMIC_PATCH_V2_COLUMNS,
+        )
+
+        if feature_matrix.shape[0] != seq_len:
+            raise RuntimeError(
+                f"Dynamic v2 feature length mismatch: expected {seq_len}, "
+                f"got {feature_matrix.shape[0]}"
+            )
+
+        dynamic_features.append(feature_matrix)
+
+    X_dynamic_v2 = np.stack(dynamic_features, axis=0).astype(np.float32)
+
+    X_dynamic_v2 = np.nan_to_num(
+        X_dynamic_v2,
+        nan=0.0,
+        posinf=0.0,
+        neginf=0.0,
+    )
+
+    return X_dynamic_v2
 def apply_feature_group_to_dataset(
     X_img,
     X_patch,
@@ -613,9 +672,10 @@ def apply_feature_group_to_dataset(
         "dynamic_patch_only",
         "classic_dynamic_patch",
         "full",
+        "dynamic_patch_v2_only",
+        "classic_dynamic_v2_patch",
     ]:
         raise ValueError(f"Unknown feature_group: {feature_group}")
-
     print()
     print(f"Building v0.9 feature group: {feature_group}")
 
@@ -623,6 +683,11 @@ def apply_feature_group_to_dataset(
         X_img=X_img,
         threshold=0.5,
         baseline_end=max(3, min(5, X_img.shape[1] // 2)),
+        mode="expansion",
+    )
+    X_dynamic_v2 = build_dynamic_patch_v2_sequence_features(
+        X_img=X_img,
+        threshold=0.5,
         mode="expansion",
     )
 
@@ -650,16 +715,26 @@ def apply_feature_group_to_dataset(
         new_X_img = X_img
         new_X_patch = np.concatenate([X_patch, X_dynamic], axis=-1)
         new_input_mode = "full"
+    elif feature_group == "dynamic_patch_v2_only":
+        new_X_img = np.zeros_like(X_img)
+        new_X_patch = X_dynamic_v2
+        new_input_mode = "patch_only"
+
+    elif feature_group == "classic_dynamic_v2_patch":
+        new_X_img = np.zeros_like(X_img)
+        new_X_patch = np.concatenate([X_patch, X_dynamic_v2], axis=-1)
+        new_input_mode = "patch_only"
 
     else:
         raise RuntimeError(f"Unhandled feature_group: {feature_group}")
 
-    print(f"Original X_img:   {X_img.shape}")
-    print(f"Original X_patch: {X_patch.shape}")
-    print(f"Dynamic X_patch:  {X_dynamic.shape}")
-    print(f"New X_img:        {new_X_img.shape}")
-    print(f"New X_patch:      {new_X_patch.shape}")
-    print(f"Model input_mode: {new_input_mode}")
+    print(f"Original X_img:      {X_img.shape}")
+    print(f"Original X_patch:    {X_patch.shape}")
+    print(f"Dynamic v1 X_patch:  {X_dynamic.shape}")
+    print(f"Dynamic v2 X_patch:  {X_dynamic_v2.shape}")
+    print(f"New X_img:           {new_X_img.shape}")
+    print(f"New X_patch:         {new_X_patch.shape}")
+    print(f"Model input_mode:    {new_input_mode}")
 
     return new_X_img, new_X_patch, new_input_mode
 
