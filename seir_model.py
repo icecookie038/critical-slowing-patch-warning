@@ -1,5 +1,21 @@
-# seir_model.py
+# seir_model_old_ac1_label.py
 # -*- coding: utf-8 -*-
+
+"""
+v1.2 label-fix version
+
+核心变化：
+1. 不再用 AC1 / variance / trend 定义主标签 critical_point。
+2. 新增可观测宏观转变事件 t_event：
+   - 默认使用 I_total_ratio >= theta_I 且 infected_area_ratio >= theta_A，并连续 k 步成立。
+3. AC1 仍然保留为 Traditional EWS / dynamics feature。
+4. 数据集返回新增：
+   - time_idx
+   - critical_time
+   - infected_area
+   - dominant_patch
+5. 后续 strict first-alarm lead time 分析可以基于 sim_id、time_idx、critical_time 完成。
+"""
 
 import math
 import numpy as np
@@ -32,32 +48,17 @@ SUPER_SPREADER_STRENGTH = 0.12
 
 
 # =========================
-# 工具函数
+# 基础工具函数
 # =========================
-def compute_csd_series(density_history, window=20):
-    density_history = np.asarray(density_history, dtype=np.float64)
-    n = len(density_history)
-
-    ac1_vals = np.zeros(n)
-    var_vals = np.zeros(n)
-    trend_vals = np.zeros(n)
-
-    for t in range(window, n):
-        w = density_history[t - window:t]
-
-        ac1_vals[t] = safe_corrcoef(w[:-1], w[1:])
-        var_vals[t] = np.var(w)
-
-        x = np.arange(len(w))
-        if np.std(w) > 1e-12:
-            trend_vals[t] = np.polyfit(x, w, 1)[0]
-
-    ac1_smooth = gaussian_filter1d(ac1_vals, sigma=2.0)
-    var_smooth = gaussian_filter1d(var_vals, sigma=2.0)
-    trend_smooth = gaussian_filter1d(trend_vals, sigma=2.0)
-
-    return ac1_smooth, var_smooth, trend_smooth
 def safe_corrcoef(x, y):
+    """
+    安全计算 Pearson 相关系数。
+
+    用途：
+    - 计算 AC1；
+    - 后续可以用于局部同步指标；
+    - 避免标准差为 0 或 NaN 导致程序崩溃。
+    """
     x = np.asarray(x, dtype=np.float64)
     y = np.asarray(y, dtype=np.float64)
 
@@ -75,6 +76,13 @@ def safe_corrcoef(x, y):
 
 
 def jensen_shannon_divergence(a, b):
+    """
+    Jensen-Shannon divergence.
+
+    用途：
+    - 衡量相邻时间步斑块面积分布变化；
+    - 作为 dynamic patch / structural change 的一个辅助指标。
+    """
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
 
@@ -98,6 +106,41 @@ def jensen_shannon_divergence(a, b):
     return float(jsd)
 
 
+def compute_csd_series(density_history, window=20):
+    """
+    计算传统临界慢化序列：AC1、variance、trend。
+
+    注意：
+    - 该函数只作为 EWS 特征或可视化诊断；
+    - 不再用于定义 ground-truth critical_time。
+    """
+    density_history = np.asarray(density_history, dtype=np.float64)
+    n = len(density_history)
+
+    ac1_vals = np.zeros(n)
+    var_vals = np.zeros(n)
+    trend_vals = np.zeros(n)
+
+    for t in range(window, n):
+        w = density_history[t - window:t]
+
+        ac1_vals[t] = safe_corrcoef(w[:-1], w[1:])
+        var_vals[t] = np.var(w)
+
+        x = np.arange(len(w))
+        if np.std(w) > 1e-12:
+            trend_vals[t] = np.polyfit(x, w, 1)[0]
+
+    ac1_smooth = gaussian_filter1d(ac1_vals, sigma=2.0)
+    var_smooth = gaussian_filter1d(var_vals, sigma=2.0)
+    trend_smooth = gaussian_filter1d(trend_vals, sigma=2.0)
+
+    return ac1_smooth, var_smooth, trend_smooth
+
+
+# =========================
+# 旧 AC1 标签函数：保留但不作为主标签
+# =========================
 def detect_critical_point(
     density_history,
     window=20,
@@ -106,22 +149,13 @@ def detect_critical_point(
     min_rel_density=0.08,
 ):
     """
-    更严格的临界点检测函数。
+    旧版 AC1-based warning point 检测函数。
 
-    返回：
-        int: 临界点位置
-        None: 该模拟没有可靠临界点，应跳过
-
-    设计逻辑：
-    1. 如果整条轨迹感染峰值太低，说明没有形成有效爆发，跳过；
-    2. 候选点处感染密度不能接近 0；
-    3. 候选点处 Trend 必须为正；
-    4. 候选点处 Variance 必须达到一定水平；
-    5. 优先选择 AC1 高、Variance 高、Trend 正的最早时间点。
+    重要说明：
+    - 该函数不再用于主标签 critical_time；
+    - 只建议用于 preliminary / sensitivity / diagnostic analysis；
+    - 最终论文主标签应使用 detect_observable_event_time()。
     """
-    import numpy as np
-    from scipy.ndimage import gaussian_filter1d
-
     density_history = np.asarray(density_history, dtype=np.float64)
     n = len(density_history)
 
@@ -130,7 +164,6 @@ def detect_critical_point(
 
     max_density = float(np.max(density_history))
 
-    # 没有真正爆发，跳过
     if max_density < min_peak_density:
         return None
 
@@ -144,17 +177,9 @@ def detect_critical_point(
         if len(w) < 3:
             continue
 
-        # AC1
-        if np.std(w[:-1]) > 1e-12 and np.std(w[1:]) > 1e-12:
-            c = np.corrcoef(w[:-1], w[1:])[0, 1]
-            ac1_vals[t] = 0.0 if not np.isfinite(c) else c
-        else:
-            ac1_vals[t] = 0.0
-
-        # Variance
+        ac1_vals[t] = safe_corrcoef(w[:-1], w[1:])
         var_vals[t] = np.var(w)
 
-        # Trend
         x = np.arange(len(w))
         if np.std(w) > 1e-12:
             trend_vals[t] = np.polyfit(x, w, 1)[0]
@@ -165,10 +190,8 @@ def detect_critical_point(
     var_smooth = gaussian_filter1d(var_vals, sigma=2.0)
     trend_smooth = gaussian_filter1d(trend_vals, sigma=2.0)
 
-    # 当前感染密度必须达到峰值的一定比例，避免 Case 3 这种早期空转误判
     density_threshold = max(min_peak_density, min_rel_density * max_density)
 
-    # 方差阈值：只在有效非零区域中计算
     valid_var_pool = var_smooth[window:]
     valid_var_pool = valid_var_pool[np.isfinite(valid_var_pool)]
 
@@ -184,13 +207,11 @@ def detect_critical_point(
         & (np.arange(n) >= window + 5)
     )
 
-    # 优先找 AC1 超过阈值的最早候选点
     candidates = np.where(valid_mask & (ac1_smooth >= threshold_ac1))[0]
 
     if len(candidates) > 0:
         return int(candidates[0])
 
-    # 如果没有 AC1 超阈值，就用综合分数兜底
     var_norm = var_smooth / (np.max(var_smooth) + 1e-12)
 
     positive_trend = np.maximum(trend_smooth, 0.0)
@@ -205,6 +226,126 @@ def detect_critical_point(
         return None
 
     return int(np.argmax(score))
+
+
+# =========================
+# v1.2 新标签函数：基于可观测宏观转变事件
+# =========================
+def first_persistent_time(condition, k=3):
+    """
+    找到布尔序列中第一次连续 k 步为 True 的起点。
+
+    用途：
+    - 避免偶然噪声导致单个时间点误判为 transition；
+    - 用于 t_event、t_R、visible_patch_time 等事件时间检测。
+    """
+    condition = np.asarray(condition, dtype=bool)
+
+    if len(condition) < k:
+        return None
+
+    for t in range(0, len(condition) - k + 1):
+        if np.all(condition[t:t + k]):
+            return int(t)
+
+    return None
+
+
+def detect_observable_event_time(
+    density_hist,
+    infected_area_hist,
+    dominant_patch_hist,
+    theta_I=0.05,
+    theta_A=0.05,
+    theta_L=0.10,
+    k=3,
+    mode="infection_area",
+):
+    """
+    基于可观测宏观转变事件定义 transition time。
+
+    参数：
+    - density_hist:
+        I_total / total_population，整体感染比例。
+    - infected_area_hist:
+        被感染斑块占总网格面积比例，这里来自 patch_metrics 的 occupancy。
+    - dominant_patch_hist:
+        最大斑块在所有感染斑块面积中的占比。
+    - theta_I:
+        整体感染比例阈值。
+    - theta_A:
+        感染面积比例阈值。
+    - theta_L:
+        主导斑块占比阈值。
+    - k:
+        连续 k 步满足条件才认为事件发生。
+    - mode:
+        "infection_area":
+            density_hist >= theta_I 且 infected_area_hist >= theta_A
+            推荐作为主标签。
+        "area_patch":
+            infected_area_hist >= theta_A 且 dominant_patch_hist >= theta_L
+            更强调斑块形成，但可能更依赖斑块阈值。
+        "infection_only":
+            只使用 density_hist >= theta_I
+            作为快速调试或敏感性分析，不建议作为最终主标签。
+
+    返回：
+    - t_event: int 或 None
+    """
+    density_hist = np.asarray(density_hist, dtype=np.float64)
+    infected_area_hist = np.asarray(infected_area_hist, dtype=np.float64)
+    dominant_patch_hist = np.asarray(dominant_patch_hist, dtype=np.float64)
+
+    if mode == "infection_area":
+        condition = (
+            (density_hist >= theta_I)
+            & (infected_area_hist >= theta_A)
+        )
+
+    elif mode == "area_patch":
+        condition = (
+            (infected_area_hist >= theta_A)
+            & (dominant_patch_hist >= theta_L)
+        )
+
+    elif mode == "infection_only":
+        condition = density_hist >= theta_I
+
+    else:
+        raise ValueError(f"Unknown event mode: {mode}")
+
+    return first_persistent_time(condition, k=k)
+
+
+def make_horizon_label(time_idx, critical_time, horizon):
+    """
+    根据 critical_time 构造 horizon-based early-warning label。
+
+    y = 1 当且仅当：
+        0 < critical_time - time_idx <= horizon
+
+    含义：
+    - 当前样本仍在事件发生之前；
+    - 并且事件将在未来 horizon 步内发生。
+    """
+    remaining = float(critical_time - time_idx)
+    risk = 1.0 if 0.0 < remaining <= float(horizon) else 0.0
+    return remaining, risk
+
+
+def compute_reff(beta_t, susceptible_ratio, gamma):
+    """
+    近似有效再生数 Reff(t)。
+
+    用途：
+    - 当前版本主要作为 metadata 或后续理论辅助标签；
+    - 不建议第一轮直接用它替代 t_event 作为主标签；
+    - 后续可以扩展为空间谱半径版 Reff_spatial。
+    """
+    return float(beta_t * susceptible_ratio / max(gamma, 1e-12))
+
+
 # =========================
 # SEIR 空间模型
 # =========================
@@ -223,6 +364,10 @@ class PatchSEIR:
     5. 季节因素
     6. 行为反馈
     7. 斑块指标
+
+    v1.2 修改：
+    - history 中额外保存 S_total, E_total, R_total, effective_beta, Reff；
+    - history 中保存 infected_area 和 dominant_patch，方便打新标签。
     """
 
     def __init__(
@@ -274,11 +419,18 @@ class PatchSEIR:
 
         self.history = {
             "beta": [],
+            "effective_beta": [],
+            "S_total": [],
+            "E_total": [],
             "I_total": [],
+            "R_total": [],
+            "Reff": [],
             "density": [],
             "features": [],
             "patch_sizes": [],
             "jsd": [],
+            "infected_area": [],
+            "dominant_patch": [],
         }
 
     # =========================
@@ -537,7 +689,7 @@ class PatchSEIR:
                             continue
 
                         dist = math.sqrt((si - ti) ** 2 + (sj - tj) ** 2)
-                        strength = AIR_TRAVEL_STRENGTH * math.exp(-dist / (self.L / 3.0 + 1e-8))
+                        strength = AIR_TRAVEL_STRENGTH * math.exp(dist * -1.0 / (self.L / 3.0 + 1e-8))
                         prob = strength * source_q * self.effective_beta * self.beta_density_factor[ti, tj]
                         prob = min(float(prob), 0.15)
 
@@ -616,6 +768,28 @@ class PatchSEIR:
         返回：
         patch_metrics: 10 维斑块指标
         patch_sizes: 每个有效斑块面积，用于 JSD
+
+        10 维含义：
+        0. dominant_patch_ratio:
+           最大斑块面积 / 总感染斑块面积
+        1. patch_m2:
+           斑块面积二阶矩
+        2. num_patches:
+           有效斑块数量
+        3. mean_area:
+           平均斑块面积 / 总网格面积
+        4. area_cv:
+           斑块面积变异系数
+        5. gini:
+           斑块面积 Gini
+        6. boundary_complexity:
+           平均边界复杂度
+        7. mean_intensity:
+           斑块内平均感染强度
+        8. intensity_var:
+           斑块间感染强度方差
+        9. occupancy:
+           总感染斑块面积 / 总网格面积
         """
         q = self.I / np.maximum(self.grid_population, 1)
         binary = (q > threshold).astype(np.int32)
@@ -661,7 +835,7 @@ class PatchSEIR:
 
         area_ratios = areas / total_grid_area
 
-        largest_patch_ratio = float(np.max(areas) / (total_patch_area + 1e-8))
+        dominant_patch_ratio = float(np.max(areas) / (total_patch_area + 1e-8))
         patch_m2 = float(np.mean(area_ratios ** 2))
         num_patches = float(len(areas))
         mean_area = float(np.mean(area_ratios))
@@ -681,7 +855,7 @@ class PatchSEIR:
 
         metrics = np.array(
             [
-                largest_patch_ratio,
+                dominant_patch_ratio,
                 patch_m2,
                 num_patches,
                 mean_area,
@@ -734,6 +908,10 @@ class PatchSEIR:
         10 个斑块指标 + 9 个动力学指标
 
         之后在数据生成函数中再拼接 JSD，最终为 20 维。
+
+        注意：
+        - 这里的 AC1 只是 feature；
+        - 不能再用 AC1 定义 critical_time。
         """
         patch_metrics, patch_sizes = self.compute_patch_metrics()
 
@@ -794,17 +972,41 @@ class PatchSEIR:
     def _record_history(self):
         features, density, _, patch_sizes = self.get_causal_features()
 
+        total_pop = float(np.sum(self.grid_population))
+        s_total = float(np.sum(self.S) / max(1.0, total_pop))
+        e_total = float(np.sum(self.E) / max(1.0, total_pop))
+        i_total = float(np.sum(self.I) / max(1.0, total_pop))
+        r_total = float(np.sum(self.R) / max(1.0, total_pop))
+
+        reff = compute_reff(
+            beta_t=float(self.effective_beta),
+            susceptible_ratio=s_total,
+            gamma=float(self.gamma),
+        )
+
+        # features[0] = dominant_patch_ratio
+        # features[9] = occupancy / infected_area_ratio
+        dominant_patch = float(features[0])
+        infected_area = float(features[9])
+
         self.history["beta"].append(float(self.current_beta))
-        self.history["I_total"].append(float(np.sum(self.I) / max(1, np.sum(self.grid_population))))
+        self.history["effective_beta"].append(float(self.effective_beta))
+        self.history["S_total"].append(s_total)
+        self.history["E_total"].append(e_total)
+        self.history["I_total"].append(i_total)
+        self.history["R_total"].append(r_total)
+        self.history["Reff"].append(reff)
+
         self.history["density"].append(float(density))
         self.history["features"].append(features)
         self.history["patch_sizes"].append(patch_sizes)
 
+        self.history["infected_area"].append(infected_area)
+        self.history["dominant_patch"].append(dominant_patch)
+
     def get_infection_grid(self):
         """
-        关键修改：
-        不是 I / total_population，
-        而是每个格点自己的感染率 I_i / N_i。
+        返回每个格点自己的感染率 I_i / N_i。
         """
         q = self.I.astype(np.float32) / np.maximum(self.grid_population, 1).astype(np.float32)
         return np.clip(q, 0.0, 1.0).astype(np.float32)
@@ -821,6 +1023,11 @@ def _generate_one_sample(args):
         input_seq_len,
         horizon,
         seed,
+        event_mode,
+        theta_I,
+        theta_A,
+        theta_L,
+        persistent_k,
     ) = args
 
     rng = np.random.default_rng(seed + sample_idx)
@@ -850,12 +1057,20 @@ def _generate_one_sample(args):
     feature_hist = []
     jsd_hist = []
 
+    infected_area_hist = []
+    dominant_patch_hist = []
+    reff_hist = []
+
     for _ in range(sim_steps):
         model.step()
 
         density_hist.append(model.history["density"][-1])
         image_hist.append(model.get_infection_grid())
         feature_hist.append(model.history["features"][-1])
+
+        infected_area_hist.append(model.history["infected_area"][-1])
+        dominant_patch_hist.append(model.history["dominant_patch"][-1])
+        reff_hist.append(model.history["Reff"][-1])
 
         if len(model.history["jsd"]) > 0:
             jsd_hist.append(model.history["jsd"][-1])
@@ -867,10 +1082,30 @@ def _generate_one_sample(args):
     feature_hist = np.asarray(feature_hist, dtype=np.float32)
     jsd_hist = np.asarray(jsd_hist, dtype=np.float32)
 
-    critical_point = detect_critical_point(density_hist)
+    infected_area_hist = np.asarray(infected_area_hist, dtype=np.float32)
+    dominant_patch_hist = np.asarray(dominant_patch_hist, dtype=np.float32)
+    reff_hist = np.asarray(reff_hist, dtype=np.float32)
 
-    if critical_point is None:
+    # =========================
+    # v1.2 关键修改：
+    # 用可观测宏观事件 t_event 作为 critical_point
+    # 而不是 detect_critical_point(density_hist)
+    # =========================
+    t_event = detect_observable_event_time(
+        density_hist=density_hist,
+        infected_area_hist=infected_area_hist,
+        dominant_patch_hist=dominant_patch_hist,
+        theta_I=theta_I,
+        theta_A=theta_A,
+        theta_L=theta_L,
+        k=persistent_k,
+        mode=event_mode,
+    )
+
+    if t_event is None:
         return None
+
+    critical_point = int(t_event)
 
     if critical_point <= input_seq_len + 5:
         return None
@@ -881,6 +1116,12 @@ def _generate_one_sample(args):
     sample_risk = []
     sample_sim_id = []
 
+    sample_time_idx = []
+    sample_critical_time = []
+    sample_infected_area = []
+    sample_dominant_patch = []
+    sample_reff = []
+
     for t in range(input_seq_len, critical_point):
         img_seq = image_hist[t - input_seq_len:t]
         img_seq = img_seq[:, np.newaxis, :, :]  # (T, 1, L, L)
@@ -890,14 +1131,23 @@ def _generate_one_sample(args):
 
         full_patch_seq = np.concatenate([patch_seq, jsd_seq], axis=-1)  # (T, 20)
 
-        remaining = float(critical_point - t)
-        risk = 1.0 if remaining <= horizon else 0.0
+        remaining, risk = make_horizon_label(
+            time_idx=t,
+            critical_time=critical_point,
+            horizon=horizon,
+        )
 
         sample_imgs.append(img_seq.astype(np.float32))
         sample_patch_seq.append(full_patch_seq.astype(np.float32))
         sample_remaining.append(remaining)
         sample_risk.append(risk)
         sample_sim_id.append(sample_idx)
+
+        sample_time_idx.append(t)
+        sample_critical_time.append(critical_point)
+        sample_infected_area.append(float(infected_area_hist[t]))
+        sample_dominant_patch.append(float(dominant_patch_hist[t]))
+        sample_reff.append(float(reff_hist[t]))
 
     if len(sample_remaining) == 0:
         return None
@@ -908,6 +1158,11 @@ def _generate_one_sample(args):
         np.asarray(sample_remaining, dtype=np.float32),
         np.asarray(sample_risk, dtype=np.float32),
         np.asarray(sample_sim_id, dtype=np.int64),
+        np.asarray(sample_time_idx, dtype=np.int64),
+        np.asarray(sample_critical_time, dtype=np.int64),
+        np.asarray(sample_infected_area, dtype=np.float32),
+        np.asarray(sample_dominant_patch, dtype=np.float32),
+        np.asarray(sample_reff, dtype=np.float32),
     )
 
 
@@ -919,14 +1174,39 @@ def generate_patch_dataset(
     horizon=15,
     seed=DEFAULT_SEED,
     num_workers=0,
+    event_mode="infection_area",
+    theta_I=0.05,
+    theta_A=0.05,
+    theta_L=0.10,
+    persistent_k=3,
 ):
     """
+    生成用于训练的 SEIR 斑块预警数据集。
+
     返回：
-    X_img:       (N, T, 1, L, L)
-    X_patch:     (N, T, 20)
-    y_remaining: (N,)
-    y_risk:      (N,)
-    sim_id:      (N,)
+    - X_img:          (N, T, 1, L, L)
+    - X_patch:        (N, T, 20)
+    - y_remaining:    (N,)
+                      当前时间点距离可观测宏观转变事件 t_event 的剩余时间。
+    - y_risk:         (N,)
+                      horizon-based early-warning label。
+                      当 0 < t_event - t <= horizon 时为 1。
+    - sim_id:         (N,)
+                      样本来自哪一条模拟轨迹。
+    - time_idx:       (N,)
+                      样本对应的模拟时间点。
+    - critical_time:  (N,)
+                      可观测宏观转变时间 t_event。
+    - infected_area:  (N,)
+                      当前时刻感染斑块面积比例。
+    - dominant_patch: (N,)
+                      当前时刻最大斑块占所有感染斑块面积的比例。
+    - reff:           (N,)
+                      近似 Reff(t)，用于后续辅助分析。
+
+    重要：
+    - AC1 不再用于定义 critical_time；
+    - AC1 仍然包含在 X_patch 的动力学特征中。
     """
     tasks = [
         (
@@ -936,12 +1216,22 @@ def generate_patch_dataset(
             input_seq_len,
             horizon,
             seed,
+            event_mode,
+            theta_I,
+            theta_A,
+            theta_L,
+            persistent_k,
         )
         for i in range(num_sims)
     ]
 
     print(f"\n===== Generating dataset: {num_sims} simulations =====")
     print(f"L={L}, sim_steps={sim_steps}, input_seq_len={input_seq_len}, horizon={horizon}")
+    print(
+        "Event label: "
+        f"mode={event_mode}, theta_I={theta_I}, theta_A={theta_A}, "
+        f"theta_L={theta_L}, persistent_k={persistent_k}"
+    )
 
     if num_workers is not None and num_workers > 0:
         with Pool(processes=num_workers) as pool:
@@ -954,9 +1244,23 @@ def generate_patch_dataset(
     results = [r for r in results if r is not None]
 
     if len(results) == 0:
-        raise RuntimeError("No valid simulations generated. Try increasing beta range or num_sims.")
+        raise RuntimeError(
+            "No valid simulations generated. "
+            "Try increasing beta range, sim_steps, num_sims, or lowering event thresholds."
+        )
 
-    X_img, X_patch, y_remaining, y_risk, sim_id = zip(*results)
+    (
+        X_img,
+        X_patch,
+        y_remaining,
+        y_risk,
+        sim_id,
+        time_idx,
+        critical_time,
+        infected_area,
+        dominant_patch,
+        reff,
+    ) = zip(*results)
 
     X_img = np.concatenate(X_img, axis=0)
     X_patch = np.concatenate(X_patch, axis=0)
@@ -964,12 +1268,33 @@ def generate_patch_dataset(
     y_risk = np.concatenate(y_risk, axis=0)
     sim_id = np.concatenate(sim_id, axis=0)
 
+    time_idx = np.concatenate(time_idx, axis=0)
+    critical_time = np.concatenate(critical_time, axis=0)
+    infected_area = np.concatenate(infected_area, axis=0)
+    dominant_patch = np.concatenate(dominant_patch, axis=0)
+    reff = np.concatenate(reff, axis=0)
+
     print("\n===== Dataset finished =====")
     print(f"Valid simulations: {len(results)} / {num_sims}")
-    print(f"X_img:       {X_img.shape}")
-    print(f"X_patch:     {X_patch.shape}")
-    print(f"y_remaining: {y_remaining.shape}")
-    print(f"y_risk:      {y_risk.shape}")
-    print(f"risk ratio:  {float(np.mean(y_risk)):.4f}")
+    print(f"X_img:          {X_img.shape}")
+    print(f"X_patch:        {X_patch.shape}")
+    print(f"y_remaining:    {y_remaining.shape}")
+    print(f"y_risk:         {y_risk.shape}")
+    print(f"sim_id:         {sim_id.shape}")
+    print(f"time_idx:       {time_idx.shape}")
+    print(f"critical_time:  {critical_time.shape}")
+    print(f"risk ratio:     {float(np.mean(y_risk)):.4f}")
+    print(f"mean critical_time: {float(np.mean(critical_time)):.2f}")
 
-    return X_img, X_patch, y_remaining, y_risk, sim_id
+    return (
+        X_img,
+        X_patch,
+        y_remaining,
+        y_risk,
+        sim_id,
+        time_idx,
+        critical_time,
+        infected_area,
+        dominant_patch,
+        reff,
+    )
