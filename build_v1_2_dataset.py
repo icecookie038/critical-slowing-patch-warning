@@ -2,12 +2,13 @@
 from pathlib import Path
 import numpy as np
 
+print("Starting v1.2 dataset generation...")
+
 PROJECT_ROOT = Path(__file__).resolve().parent
 SRC_DIR = PROJECT_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
 
 from seir_model import generate_patch_dataset
-
 
 OUT_DIR = PROJECT_ROOT / "data" / "processed" / "v1_2_label_fix"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -31,8 +32,6 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
     horizon=30,
     seed=42,
     num_workers=0,
-
-    # v1.2 main label setting
     theta_I=0.03,
     theta_A=0.03,
     persistent_k=3,
