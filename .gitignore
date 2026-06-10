@@ -48,3 +48,21 @@ scripts/data/
 scripts/results/
 scripts/models/
 scripts/results_baselines/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Generated data
+data/processed/
+*.npz
+
+# Model checkpoints
+models/
+*.pth
+*.pt
+
+# Experiment logs
+runs/
+wandb/
