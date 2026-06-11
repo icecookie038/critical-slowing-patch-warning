@@ -201,8 +201,55 @@ prewindow_alarm_rate ≈ 0.290
 Thus, RandomForest currently provides the best trade-off between valid early warning and avoiding overly early pre-window alarms.
 
 ---
+## 6. last Mode: All Models, h30, persistent_k = 2
 
-## 6. Interpretation
+The first-alarm analysis was also run for all five tabular models under the `last` feature mode. In this setting, only the last time step of each patch-feature window is used as the model input.
+
+| Model                | Valid-window alarm rate | Miss rate | Valid lead mean | Valid lead median | Lead Q25 | Lead Q75 | Pre-window alarm rate | Late alarm rate |
+| -------------------- | ----------------------: | --------: | --------------: | ----------------: | -------: | -------: | --------------------: | --------------: |
+| ExtraTrees           |                     1.0 |       0.0 |           27.45 |              29.0 |     26.5 |     30.0 |                 0.484 |             0.0 |
+| HistGradientBoosting |                     1.0 |       0.0 |           27.13 |              29.0 |     26.0 |     30.0 |                 0.613 |             0.0 |
+| MLP                  |                     1.0 |       0.0 |           27.03 |              28.0 |     26.0 |     30.0 |                 0.484 |             0.0 |
+| RandomForest         |                     1.0 |       0.0 |           26.48 |              28.0 |     26.0 |     30.0 |                 0.452 |             0.0 |
+| LogisticRegression   |                     1.0 |       0.0 |           26.39 |              27.0 |     24.5 |     30.0 |                 0.355 |             0.0 |
+
+All five models achieved:
+
+```text
+valid_window_alarm_rate = 1.0
+valid_window_miss_rate = 0.0
+late_alarm_rate = 0.0
+```
+
+Compared with the `stats` mode, the `last` mode still produced stable valid-window alarms, but the best lead-time performance was slightly lower. Under `last` mode, ExtraTrees achieved the highest valid-window first-alarm lead time:
+
+```text
+valid_first_alarm_lead_mean ≈ 27.45
+valid_first_alarm_lead_median = 29.0
+```
+
+However, its pre-window alarm rate was approximately:
+
+```text
+prewindow_alarm_rate ≈ 0.484
+```
+
+LogisticRegression had the lowest pre-window alarm rate under `last` mode:
+
+```text
+prewindow_alarm_rate ≈ 0.355
+```
+
+but also had a slightly shorter valid-window lead time:
+
+```text
+valid_first_alarm_lead_mean ≈ 26.39
+valid_first_alarm_lead_median = 27.0
+```
+
+Overall, the `last` mode confirms that the current patch state alone already contains predictive information, while the `stats` mode remains more useful because it captures short-term temporal evolution within the patch-feature window.
+
+## 7. Interpretation
 
 The v1.2 label-fix experiment shows that patch statistical features remain predictive under the event-based transition label.
 
@@ -218,7 +265,7 @@ This supports using RandomForest as the current main model candidate for v1.2 st
 
 ---
 
-## 7. Current Status
+## 8. Current Status
 
 Completed:
 
@@ -245,7 +292,7 @@ Not yet completed:
 
 ---
 
-## 8. Next Steps
+## 9. Next Steps
 
 Immediate next steps:
 
