@@ -214,6 +214,18 @@ def load_patch_dataset(data_file: Path, feature_mode: str):
         required=False,
     )
 
+    time_idx_key = pick_key(
+        data,
+        ["time_idx", "time_index", "t_idx", "t"],
+        required=False,
+    )
+
+    critical_time_key = pick_key(
+        data,
+        ["critical_time", "t_event", "event_time", "transition_time"],
+        required=False,
+    )
+
     x_patch = data[x_patch_key]
     y = data[y_key].astype(int)
 
@@ -227,12 +239,30 @@ def load_patch_dataset(data_file: Path, feature_mode: str):
     if sim_id_key is not None:
         sim_ids = data[sim_id_key]
 
+    time_idx = None
+    if time_idx_key is not None:
+        time_idx = data[time_idx_key].astype(int)
+
+    critical_time = None
+    if critical_time_key is not None:
+        critical_time = data[critical_time_key].astype(float)
+
+    sample_index = np.arange(len(y))
+
     valid_mask = np.isfinite(x).all(axis=1) & np.isfinite(y)
+
     if y_remaining is not None:
         valid_mask = valid_mask & np.isfinite(y_remaining)
 
+    if time_idx is not None:
+        valid_mask = valid_mask & np.isfinite(time_idx)
+
+    if critical_time is not None:
+        valid_mask = valid_mask & np.isfinite(critical_time)
+
     x = x[valid_mask]
     y = y[valid_mask]
+    sample_index = sample_index[valid_mask]
 
     if y_remaining is not None:
         y_remaining = y_remaining[valid_mask]
@@ -240,27 +270,34 @@ def load_patch_dataset(data_file: Path, feature_mode: str):
     if sim_ids is not None:
         sim_ids = sim_ids[valid_mask]
 
+    if time_idx is not None:
+        time_idx = time_idx[valid_mask]
+
+    if critical_time is not None:
+        critical_time = critical_time[valid_mask]
+
     info = {
         "data_file": str(data_file),
         "x_patch_key": x_patch_key,
         "y_key": y_key,
         "remaining_key": remaining_key,
         "sim_id_key": sim_id_key,
+        "time_idx_key": time_idx_key,
+        "critical_time_key": critical_time_key,
         "raw_x_patch_shape": list(x_patch.shape),
         "final_x_shape": list(x.shape),
         "positive_rate": float(np.mean(y)),
         "n_samples": int(len(y)),
     }
 
-    return x, y, y_remaining, sim_ids, info
-
-
+    return x, y, y_remaining, sim_ids, time_idx, critical_time, sample_index, info
 # ============================================================
 # 4. Train / validation split
 # ============================================================
 
 def split_dataset(x, y, y_remaining, sim_ids, val_ratio=0.25, seed=42):
     rng = np.random.default_rng(seed)
+    all_idx = np.arange(len(y))
 
     if sim_ids is not None:
         unique_ids = np.unique(sim_ids)
@@ -272,13 +309,16 @@ def split_dataset(x, y, y_remaining, sim_ids, val_ratio=0.25, seed=42):
         val_mask = np.array([sid in val_ids for sid in sim_ids])
         train_mask = ~val_mask
 
-        x_train = x[train_mask]
-        y_train = y[train_mask]
-        x_val = x[val_mask]
-        y_val = y[val_mask]
+        train_idx = all_idx[train_mask]
+        val_idx = all_idx[val_mask]
 
-        rem_train = None if y_remaining is None else y_remaining[train_mask]
-        rem_val = None if y_remaining is None else y_remaining[val_mask]
+        x_train = x[train_idx]
+        y_train = y[train_idx]
+        x_val = x[val_idx]
+        y_val = y[val_idx]
+
+        rem_train = None if y_remaining is None else y_remaining[train_idx]
+        rem_val = None if y_remaining is None else y_remaining[val_idx]
 
         split_info = {
             "split_method": "by_simulation_id",
@@ -287,14 +327,13 @@ def split_dataset(x, y, y_remaining, sim_ids, val_ratio=0.25, seed=42):
             "train_positive_rate": float(np.mean(y_train)),
             "val_positive_rate": float(np.mean(y_val)),
             "n_unique_sim_ids": int(len(unique_ids)),
+            "n_train_sim_ids": int(len(unique_ids) - n_val),
             "n_val_sim_ids": int(n_val),
         }
 
     else:
-        indices = np.arange(len(y))
-
         train_idx, val_idx = train_test_split(
-            indices,
+            all_idx,
             test_size=val_ratio,
             random_state=seed,
             stratify=y,
@@ -316,9 +355,7 @@ def split_dataset(x, y, y_remaining, sim_ids, val_ratio=0.25, seed=42):
             "val_positive_rate": float(np.mean(y_val)),
         }
 
-    return x_train, x_val, y_train, y_val, rem_train, rem_val, split_info
-
-
+    return x_train, x_val, y_train, y_val, rem_train, rem_val, train_idx, val_idx, split_info
 # ============================================================
 # 5. Models
 # ============================================================
@@ -643,12 +680,12 @@ def main():
     print("Output folder:")
     print(out_dir)
 
-    x, y, y_remaining, sim_ids, data_info = load_patch_dataset(
+    x, y, y_remaining, sim_ids, time_idx, critical_time, sample_index, data_info = load_patch_dataset(
         data_file=data_file,
         feature_mode=args.feature_mode,
     )
 
-    x_train, x_val, y_train, y_val, rem_train, rem_val, split_info = split_dataset(
+    x_train, x_val, y_train, y_val, rem_train, rem_val, train_idx, val_idx, split_info = split_dataset(
         x=x,
         y=y,
         y_remaining=y_remaining,
@@ -712,16 +749,35 @@ def main():
         bin_df.to_csv(out_dir / f"{model_name}_binned_risk.csv", index=False)
         all_bin_tables[model_name] = bin_df
 
-        pred_df = pd.DataFrame({
+        best_threshold = float(metrics["Best_Threshold"])
+        y_pred = (prob >= best_threshold).astype(int)
+
+        pred_dict = {
+            "sample_index": sample_index[val_idx],
             "y_true": y_val,
             "risk_prob": prob,
-        })
+            "y_pred": y_pred,
+            "threshold": best_threshold,
+            "model": model_name,
+            "feature_mode": args.feature_mode,
+            "seed": args.seed,
+            "split": "val",
+        }
 
         if rem_val is not None:
-            pred_df["y_remaining"] = rem_val
+            pred_dict["y_remaining"] = rem_val
 
+        if sim_ids is not None:
+            pred_dict["sim_id"] = sim_ids[val_idx]
+
+        if time_idx is not None:
+            pred_dict["time_idx"] = time_idx[val_idx]
+
+        if critical_time is not None:
+            pred_dict["critical_time"] = critical_time[val_idx]
+
+        pred_df = pd.DataFrame(pred_dict)
         pred_df.to_csv(out_dir / f"{model_name}_predictions.csv", index=False)
-
     metrics_df = pd.DataFrame(all_metrics)
 
     preferred_cols = [
