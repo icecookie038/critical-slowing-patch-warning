@@ -320,8 +320,36 @@ Current conclusion:
 ```text
 Patch-based information is the dominant predictive component. CNN-GRU full provides a useful deep-learning confirmation, but the interpretable patch indicators remain central to the paper's contribution.
 ```
+## 8. Overall v1.2 First-Alarm Comparison
 
-## 8. Interpretation
+An overall comparison was conducted across tabular patch baselines and CNN-GRU deep models under the h30 warning horizon and persistent_k = 2.
+
+| Group | Model | Valid alarm rate | Miss rate | Lead mean | Lead median | Lead Q25 | Lead Q75 | Pre-window alarm rate |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| tabular_stats | HistGradientBoosting | 1.0 | 0.0 | 28.48 | 30.0 | 27.5 | 30.0 | 0.613 |
+| tabular_last | ExtraTrees | 1.0 | 0.0 | 27.45 | 29.0 | 26.5 | 30.0 | 0.484 |
+| tabular_stats | MLP | 1.0 | 0.0 | 27.32 | 30.0 | 26.5 | 30.0 | 0.581 |
+| tabular_last | HistGradientBoosting | 1.0 | 0.0 | 27.13 | 29.0 | 26.0 | 30.0 | 0.613 |
+| tabular_last | MLP | 1.0 | 0.0 | 27.03 | 28.0 | 26.0 | 30.0 | 0.484 |
+| tabular_stats | ExtraTrees | 1.0 | 0.0 | 27.03 | 29.0 | 26.0 | 30.0 | 0.419 |
+| tabular_last | RandomForest | 1.0 | 0.0 | 26.48 | 28.0 | 26.0 | 30.0 | 0.452 |
+| tabular_last | LogisticRegression | 1.0 | 0.0 | 26.39 | 27.0 | 24.5 | 30.0 | 0.355 |
+| cnn_gru | CNN_GRU_full | 1.0 | 0.0 | 26.38 | 26.0 | 24.25 | 30.0 | 0.423 |
+| tabular_stats | RandomForest | 1.0 | 0.0 | 26.32 | 28.0 | 25.5 | 30.0 | 0.290 |
+| tabular_stats | LogisticRegression | 1.0 | 0.0 | 26.26 | 28.0 | 23.0 | 30.0 | 0.419 |
+| cnn_gru | CNN_GRU_patch_only | 1.0 | 0.0 | 26.08 | 26.0 | 24.25 | 29.75 | 0.423 |
+| cnn_gru | CNN_GRU_img_only | 1.0 | 0.0 | 25.81 | 27.5 | 23.25 | 30.0 | 0.615 |
+
+All compared models achieved valid-window alarm rate = 1.0 and miss rate = 0.0 under the current seed42 h30 setting. Therefore, the key difference among models is not whether they can trigger alarms, but how early they alarm within the valid window and how often they trigger pre-window alarms before the official warning horizon.
+
+HistGradientBoosting under the tabular_stats setting achieved the longest valid-window lead time, with mean lead time ≈ 28.48 and median lead time = 30.0. However, it also showed a high pre-window alarm rate of approximately 0.613.
+
+RandomForest under the tabular_stats setting achieved a slightly shorter lead time, with mean lead time ≈ 26.32 and median lead time = 28.0, but had the lowest pre-window alarm rate, approximately 0.290. Therefore, it currently provides the best trade-off between early valid alarms and conservative false-alarm control.
+
+CNN-GRU full achieved mean valid lead time ≈ 26.38 and pre-window alarm rate ≈ 0.423. CNN-GRU patch_only was very close to CNN-GRU full, while CNN-GRU img_only was weaker and had the highest pre-window alarm rate among the deep models.
+
+Overall, the v1.2 results suggest that patch-based information is the dominant predictive component. CNN-GRU provides a useful deep-learning validation of the spatial-temporal warning signal, but it does not clearly outperform the interpretable patch-based tabular baselines in the current setting.
+## 9. Interpretation
 
 The v1.2 label-fix experiment shows that patch statistical features remain predictive under the event-based transition label.
 
@@ -337,7 +365,7 @@ This supports using RandomForest as the current main model candidate for v1.2 st
 
 ---
 
-## 9. Current Status
+## 10. Current Status
 
 Completed:
 
@@ -364,7 +392,7 @@ Not yet completed:
 
 ---
 
-## 10. Next Steps
+## 11. Next Steps
 
 Immediate next steps:
 
