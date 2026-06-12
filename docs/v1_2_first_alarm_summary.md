@@ -249,7 +249,79 @@ valid_first_alarm_lead_median = 27.0
 
 Overall, the `last` mode confirms that the current patch state alone already contains predictive information, while the `stats` mode remains more useful because it captures short-term temporal evolution within the patch-feature window.
 
-## 7. Interpretation
+## 7. CNN-GRU Deep Models: h30, persistent_k = 2
+
+The CNN-GRU models were also connected to the v1.2 event-based label-fix dataset. The script `train_patch_model_v1_2.py` loads the v1.2 `.npz` dataset directly and saves prediction files with the same metadata format used by the tabular baselines.
+
+Three input modes were evaluated:
+
+```text
+full       = X_img + X_patch
+img_only   = X_img only
+patch_only = X_patch only
+```
+
+The deep model uses a spatial CNN to extract image features from `X_img`, a GRU to model temporal dynamics, and an attention layer to aggregate temporal information. The same strict first-alarm analysis was applied to the resulting prediction files.
+
+### Classification performance
+
+| Model              |    AUC |  AUPRC |    ACC |     F1 | Precision | Recall | Best threshold |
+| ------------------ | -----: | -----: | -----: | -----: | --------: | -----: | -------------: |
+| CNN_GRU_full       | 0.9534 | 0.9356 | 0.8838 | 0.8513 |    0.8271 | 0.8769 |           0.47 |
+| CNN_GRU_img_only   | 0.9179 | 0.8673 | 0.8576 | 0.8165 |    0.7980 | 0.8359 |           0.41 |
+| CNN_GRU_patch_only | 0.9519 | 0.9300 | 0.8838 | 0.8505 |    0.8303 | 0.8718 |           0.37 |
+
+The classification results show that:
+
+```text
+CNN_GRU_full ≈ CNN_GRU_patch_only > CNN_GRU_img_only
+```
+
+This suggests that patch-sequence features contain most of the predictive information, while image-only input is weaker in the current v1.2 h30 setting.
+
+### Strict first-alarm performance
+
+| Model              | Valid-window alarm rate | Miss rate | Valid lead mean | Valid lead median | Lead Q25 | Lead Q75 | Pre-window alarm rate | Late alarm rate |
+| ------------------ | ----------------------: | --------: | --------------: | ----------------: | -------: | -------: | --------------------: | --------------: |
+| CNN_GRU_full       |                     1.0 |       0.0 |           26.38 |              26.0 |    24.25 |     30.0 |                 0.423 |             0.0 |
+| CNN_GRU_img_only   |                     1.0 |       0.0 |           25.81 |              27.5 |    23.25 |     30.0 |                 0.615 |             0.0 |
+| CNN_GRU_patch_only |                     1.0 |       0.0 |           26.08 |              26.0 |    24.25 |    29.75 |                 0.423 |             0.0 |
+
+All three CNN-GRU modes achieved:
+
+```text
+valid_window_alarm_rate = 1.0
+valid_window_miss_rate = 0.0
+late_alarm_rate = 0.0
+```
+
+However, the image-only model had the highest pre-window alarm rate:
+
+```text
+prewindow_alarm_rate ≈ 0.615
+```
+
+The full model and patch-only model had similar pre-window alarm rates:
+
+```text
+prewindow_alarm_rate ≈ 0.423
+```
+
+### Interpretation
+
+The CNN-GRU results confirm that the v1.2 event-based label can be learned by a deep temporal model. However, the full model only slightly improves over patch-only classification performance, and their first-alarm behavior is very similar.
+
+This indicates that the patch indicators are not merely auxiliary features; they contain most of the useful early-warning information. In the current v1.2 h30 experiment, image information alone is less effective, while patch-sequence features provide the dominant signal.
+
+Compared with the tabular patch baselines, CNN-GRU does not yet show a clear advantage in strict first-alarm performance. The tabular RandomForest baseline remains more conservative in terms of pre-window false alarms, while CNN-GRU provides a deep-learning validation of the same spatial-temporal warning signal.
+
+Current conclusion:
+
+```text
+Patch-based information is the dominant predictive component. CNN-GRU full provides a useful deep-learning confirmation, but the interpretable patch indicators remain central to the paper's contribution.
+```
+
+## 8. Interpretation
 
 The v1.2 label-fix experiment shows that patch statistical features remain predictive under the event-based transition label.
 
@@ -265,7 +337,7 @@ This supports using RandomForest as the current main model candidate for v1.2 st
 
 ---
 
-## 8. Current Status
+## 9. Current Status
 
 Completed:
 
@@ -292,7 +364,7 @@ Not yet completed:
 
 ---
 
-## 9. Next Steps
+## 10. Next Steps
 
 Immediate next steps:
 
