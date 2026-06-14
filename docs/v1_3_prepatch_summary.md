@@ -282,3 +282,80 @@ results_baselines/
 results/
 *.npz
 ```
+## 10. Persistent-alarm Sensitivity Analysis
+
+A persistent-alarm sensitivity analysis was conducted by increasing the alarm persistence requirement from `persistent_k = 2` to `persistent_k = 3` and `persistent_k = 4`.
+
+The purpose of this analysis was to test whether requiring consecutive alarms can reduce pre-window false alarms while preserving valid-window warning performance.
+
+Across all tested settings, the models maintained:
+
+```text
+valid_window_alarm_rate = 1.0
+miss_rate = 0.0
+late_alarm_rate = 0.0
+```
+
+This indicates that increasing the alarm persistence requirement did not cause missed event simulations under the current seed42 h30 setting.
+
+### 10.1 Prepatch-only results
+
+For the `v1_3_prepatch_only` setting, increasing `persistent_k` reduced pre-window alarms for several models.
+
+Representative results:
+
+| Setting | Model | persistent_k | Lead mean | Lead median | Pre-window alarm rate |
+|---|---|---:|---:|---:|---:|
+| prepatch_only | MLP | 3 | 26.68 | 28.0 | 0.355 |
+| prepatch_only | MLP | 4 | 26.10 | 28.0 | 0.323 |
+| prepatch_only | HistGradientBoosting | 3 | 26.45 | 28.0 | 0.419 |
+| prepatch_only | HistGradientBoosting | 4 | 26.45 | 28.0 | 0.387 |
+| prepatch_only | ExtraTrees | 3 | 26.74 | 29.0 | 0.452 |
+| prepatch_only | ExtraTrees | 4 | 26.26 | 28.0 | 0.452 |
+
+These results show that stricter persistence rules can reduce overly early alarms in prepatch-only models, although very strict settings may slightly reduce lead time.
+
+### 10.2 Visible patch + prepatch results
+
+The most useful sensitivity result was observed in the `v1_3_visible_prepatch` setting.
+
+Representative results:
+
+| Setting | Model | persistent_k | Lead mean | Lead median | Pre-window alarm rate |
+|---|---|---:|---:|---:|---:|
+| visible_prepatch | HistGradientBoosting | 2 | 28.03 | 29.0 | 0.548 |
+| visible_prepatch | HistGradientBoosting | 3 | 28.03 | 29.0 | 0.419 |
+| visible_prepatch | HistGradientBoosting | 4 | 27.61 | 28.0 | 0.387 |
+| visible_prepatch | ExtraTrees | 3 | 27.74 | 30.0 | 0.387 |
+| visible_prepatch | ExtraTrees | 4 | 27.74 | 30.0 | 0.355 |
+| visible_prepatch | RandomForest | 3 | 26.48 | 28.0 | 0.258 |
+| visible_prepatch | RandomForest | 4 | 25.81 | 28.0 | 0.258 |
+| visible_prepatch | MLP | 3 | 25.00 | 27.0 | 0.290 |
+| visible_prepatch | MLP | 4 | 24.84 | 27.0 | 0.290 |
+
+For HistGradientBoosting, increasing `persistent_k` from 2 to 3 reduced the pre-window alarm rate from approximately 0.548 to 0.419 while preserving the same mean valid-window lead time of approximately 28.03.
+
+For RandomForest, increasing `persistent_k` from 2 to 3 reduced the pre-window alarm rate from approximately 0.290 to 0.258 while preserving the mean valid-window lead time of approximately 26.48.
+
+This suggests that a moderate persistent-alarm rule can reduce over-early alarms without sacrificing useful warning lead time.
+
+### 10.3 Interpretation
+
+The persistent-alarm sensitivity analysis supports the use of a stricter alarm rule for first-alarm evaluation.
+
+The main conclusion is:
+
+```text
+A persistent-alarm rule can reduce pre-window false alarms while preserving valid-window warning performance.
+```
+
+For the current v1.3 results, `persistent_k = 3` provides the best trade-off between early warning and false-alarm control.
+
+Recommended setting:
+
+```text
+Main analysis: persistent_k = 3
+Sensitivity analysis: persistent_k = 2 and persistent_k = 4
+```
+
+This makes the first-alarm evaluation more conservative and more suitable for ecological early-warning interpretation.   
