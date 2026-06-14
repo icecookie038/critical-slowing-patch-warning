@@ -359,3 +359,100 @@ Sensitivity analysis: persistent_k = 2 and persistent_k = 4
 ```
 
 This makes the first-alarm evaluation more conservative and more suitable for ecological early-warning interpretation.   
+## 11. Feature Importance and Conservative Prepatch Set
+
+A feature-importance analysis was conducted to identify which pre-patch indicators contributed most strongly to the warning task.
+
+RandomForest and ExtraTrees were used to estimate both impurity-based importance and permutation importance. The group-level permutation importance showed that the most informative category was local synchronization.
+
+Group-level importance:
+
+| Group | Group permutation importance | Group impurity importance | Number of features |
+|---|---:|---:|---:|
+| local_synchronization | 0.0935 | 0.2656 | 3 |
+| boundary_rigidity | 0.0527 | 0.2594 | 3 |
+| spatial_connectivity | 0.0507 | 0.2207 | 3 |
+| dominant_mode_locking | 0.0327 | 0.2544 | 5 |
+
+The most important individual features were:
+
+| Rank | Feature | Group | Permutation importance |
+|---:|---|---|---:|
+| 1 | local_neighbor_corr_mean | local_synchronization | 0.0433 |
+| 2 | sync_edge_ratio | local_synchronization | 0.0389 |
+| 3 | gradient_entropy | boundary_rigidity | 0.0274 |
+| 4 | svd_mode1_ac1 | dominant_mode_locking | 0.0196 |
+| 5 | geary_c | spatial_connectivity | 0.0177 |
+| 6 | moran_i | spatial_connectivity | 0.0166 |
+| 7 | high_state_component_ratio | spatial_connectivity | 0.0164 |
+| 8 | gradient_top10_mean | boundary_rigidity | 0.0133 |
+
+This result suggests that the pre-patch warning signal is mainly driven by local synchronization, followed by boundary rigidity and spatial connectivity. Dominant-mode locking contributed less overall, although `svd_mode1_ac1` remained informative.
+
+Based on the feature-importance ranking, a conservative prepatch feature set was constructed using the top-ranked indicators:
+
+```text
+local_neighbor_corr_mean
+sync_edge_ratio
+gradient_entropy
+svd_mode1_ac1
+geary_c
+moran_i
+high_state_component_ratio
+gradient_top10_mean
+```
+
+Two conservative datasets were generated:
+
+```text
+seir_v1_3_conservative_prepatch_only_h30_seed42.npz
+seir_v1_3_visible_conservative_prepatch_h30_seed42.npz
+```
+
+### 11.1 Conservative prepatch-only results
+
+Under `persistent_k = 3`, the conservative prepatch-only setting achieved valid-window alarms for all event simulations.
+
+Representative results:
+
+| Model | Valid alarm rate | Miss rate | Lead mean | Lead median | Lead Q25 | Lead Q75 | Pre-window alarm rate |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| RandomForest | 1.0 | 0.0 | 26.84 | 30.0 | 22.5 | 30.0 | 0.484 |
+| ExtraTrees | 1.0 | 0.0 | 26.61 | 30.0 | 23.0 | 30.0 | 0.419 |
+| LogisticRegression | 1.0 | 0.0 | 26.39 | 29.0 | 22.5 | 30.0 | 0.387 |
+| MLP | 1.0 | 0.0 | 26.29 | 28.0 | 22.0 | 30.0 | 0.355 |
+| HistGradientBoosting | 1.0 | 0.0 | 26.23 | 27.0 | 22.0 | 30.0 | 0.452 |
+
+The conservative prepatch-only setting preserved warning ability, but did not uniformly improve over the full prepatch feature set.
+
+### 11.2 Visible patch + conservative prepatch results
+
+Under `persistent_k = 3`, the visible patch + conservative prepatch setting produced the following representative results:
+
+| Model | Valid alarm rate | Miss rate | Lead mean | Lead median | Lead Q25 | Lead Q75 | Pre-window alarm rate |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| HistGradientBoosting | 1.0 | 0.0 | 28.13 | 29.0 | 27.5 | 30.0 | 0.452 |
+| ExtraTrees | 1.0 | 0.0 | 27.32 | 29.0 | 26.0 | 30.0 | 0.323 |
+| RandomForest | 1.0 | 0.0 | 26.58 | 29.0 | 25.5 | 30.0 | 0.290 |
+| LogisticRegression | 1.0 | 0.0 | 26.42 | 28.0 | 24.0 | 30.0 | 0.452 |
+| MLP | 1.0 | 0.0 | 25.94 | 28.0 | 24.0 | 30.0 | 0.355 |
+
+The conservative set did not uniformly outperform the full prepatch feature set. However, it provided a useful robustness check, showing that a reduced set of high-importance prepatch indicators can still preserve valid-window warning ability.
+
+The main conclusion is:
+
+```text
+The full prepatch feature set should remain the main v1.3 result, while the conservative prepatch set should be reported as a robustness or ablation analysis.
+```
+
+### 11.3 Interpretation
+
+The feature-importance and conservative-set analyses support three conclusions:
+
+```text
+1. Local synchronization is the dominant pre-patch warning signal.
+2. Boundary rigidity and spatial connectivity provide additional useful information.
+3. A reduced high-importance prepatch set can preserve valid-window warning ability, but it does not consistently outperform the full prepatch feature set.
+```
+
+Therefore, the main paper should emphasize the full prepatch indicator framework, while the conservative feature set can be reported as supplementary robustness evidence.
