@@ -302,3 +302,65 @@ A stronger goal is:
 ```text
 Use pine-wilt-disease or forest disturbance event data to evaluate first-alarm lead time in real ecological data.
 ```
+## 14. Seed123 Robustness Check
+
+A seed123 robustness check was conducted for the vegetation CA system using three main settings:
+
+```text
+clean visible_patch
+visible_prepatch
+visible patch + PWSI_equal
+```
+
+The purpose of this robustness check was to test whether the vegetation CA conclusions were specific to seed42.
+
+### 14.1 Seed123 visible patch
+
+| Model                | Valid alarm rate | Miss rate | Lead mean | Lead median | Pre-window alarm rate | Late alarm rate |
+| -------------------- | ---------------: | --------: | --------: | ----------: | --------------------: | --------------: |
+| RandomForest         |              1.0 |       0.0 |     26.82 |        28.0 |                  0.20 |             0.0 |
+| LogisticRegression   |              1.0 |       0.0 |     26.70 |        28.0 |                  0.22 |             0.0 |
+| HistGradientBoosting |              1.0 |       0.0 |     26.62 |        28.0 |                  0.20 |             0.0 |
+| ExtraTrees           |              1.0 |       0.0 |     26.36 |        28.0 |                  0.18 |             0.0 |
+| MLP                  |              1.0 |       0.0 |     25.82 |        26.0 |                  0.22 |             0.0 |
+
+The clean visible patch baseline remained effective under seed123. All tested models achieved valid-window alarms with zero miss rate and zero late-alarm rate.
+
+### 14.2 Seed123 visible patch + prepatch
+
+| Model                | Valid alarm rate | Miss rate | Lead mean | Lead median | Pre-window alarm rate | Late alarm rate |
+| -------------------- | ---------------: | --------: | --------: | ----------: | --------------------: | --------------: |
+| RandomForest         |              1.0 |       0.0 |     29.38 |        30.0 |                  0.28 |             0.0 |
+| ExtraTrees           |              1.0 |       0.0 |     29.12 |        30.0 |                  0.26 |             0.0 |
+| LogisticRegression   |              1.0 |       0.0 |     29.00 |        30.0 |                  0.16 |             0.0 |
+| HistGradientBoosting |              1.0 |       0.0 |     28.92 |        30.0 |                  0.14 |             0.0 |
+| MLP                  |              1.0 |       0.0 |     28.92 |        30.0 |                  0.08 |             0.0 |
+
+The visible_prepatch setting produced stronger early-warning lead time than visible patch alone. It maintained zero miss rate and zero late-alarm rate, while keeping the pre-window alarm rate within a controlled range.
+
+### 14.3 Seed123 visible patch + PWSI_equal
+
+| Model                | Valid alarm rate | Miss rate | Lead mean | Lead median | Pre-window alarm rate | Late alarm rate |
+| -------------------- | ---------------: | --------: | --------: | ----------: | --------------------: | --------------: |
+| LogisticRegression   |              1.0 |       0.0 |     27.10 |        29.0 |                  0.38 |             0.0 |
+| HistGradientBoosting |              1.0 |       0.0 |     26.98 |        28.0 |                  0.20 |             0.0 |
+| MLP                  |              1.0 |       0.0 |     26.90 |        28.0 |                  0.22 |             0.0 |
+| RandomForest         |              1.0 |       0.0 |     26.64 |        28.0 |                  0.16 |             0.0 |
+| ExtraTrees           |              1.0 |       0.0 |     26.54 |        28.0 |                  0.22 |             0.0 |
+
+The visible patch + PWSI_equal setting also remained stable under seed123. It provided a compact applied representation by combining visible patch structure with the single PWSI_equal index.
+
+### 14.4 Robustness interpretation
+
+The seed123 robustness check supports the seed42 vegetation CA conclusion.
+
+The main findings are:
+
+```text
+1. Clean visible patch indicators remain effective under a different random seed.
+2. Visible_prepatch consistently provides stronger lead time than visible patch alone.
+3. Visible patch + PWSI_equal remains stable and compact, but it does not fully replace the full visible_prepatch representation.
+4. The vegetation CA results are not specific to seed42.
+```
+
+Overall, the seed123 results strengthen the v2.0 conclusion that prepatch indicators and PWSI are transferable beyond the SEIR spatial spreading system.
