@@ -346,3 +346,119 @@ The prepatch and PWSI framework remains robust under different sliding-window le
 ```
 
 This result strengthens the robustness evidence of the proposed framework before moving to real remote-sensing validation.
+
+## 15. Correlation Threshold Sensitivity Experiment
+
+The third robustness experiment focuses on the sensitivity of the local synchronization indicator to different correlation thresholds.
+
+The goal of this experiment is to test whether the local synchronization signal depends on a single manually selected correlation threshold.
+
+Five correlation thresholds were tested:
+
+```text
+0.4
+0.5
+0.6
+0.7
+0.8
+```
+
+The experiment was conducted on the vegetation CA seed42 dataset.
+
+The tested indicator was:
+
+```text
+sync_edge_ratio
+```
+
+The alarm rule was:
+
+```text
+mean + 2σ
+```
+
+The evaluated metrics include:
+
+```text
+Valid-window alarm rate
+Miss rate
+Lead mean
+Lead median
+Pre-window alarm rate
+Late alarm rate
+```
+
+## 16. Vegetation CA Correlation Threshold Sensitivity Results
+
+| Correlation threshold | Threshold rule | Valid alarm | Miss rate | Lead mean | Lead median | Pre-window alarm rate |
+| --------------------: | -------------- | ----------: | --------: | --------: | ----------: | --------------------: |
+|                   0.4 | mean + 2σ      |       0.425 |     0.575 |     25.78 |        28.0 |                 0.430 |
+|                   0.5 | mean + 2σ      |       0.395 |     0.605 |     25.87 |        28.0 |                 0.505 |
+|                   0.6 | mean + 2σ      |       0.350 |     0.650 |     26.47 |        29.0 |                 0.590 |
+|                   0.7 | mean + 2σ      |       0.265 |     0.735 |     27.25 |        29.0 |                 0.715 |
+|                   0.8 | mean + 2σ      |       0.120 |     0.880 |     28.75 |        29.0 |                 0.875 |
+
+## 17. Correlation Threshold Sensitivity Interpretation
+
+The single local synchronization indicator showed clear sensitivity to the selected correlation threshold.
+
+As the correlation threshold increased from 0.4 to 0.8, the valid-window alarm rate decreased from 0.425 to 0.120, while the pre-window alarm rate increased from 0.430 to 0.875.
+
+This indicates that sync_edge_ratio can capture early local synchronization signals, but when it is used alone as a hard-threshold warning indicator, it tends to generate many pre-window alarms.
+
+Therefore, sync_edge_ratio should not be used as the final standalone warning rule.
+
+Instead, it is more appropriate to interpret local synchronization as one component of the broader prepatch spatial organization framework.
+
+## 18. Main Conclusion of Correlation Threshold Sensitivity
+
+The main conclusion is:
+
+```text
+The local synchronization signal is an important precursor component, but a single threshold-based sync_edge_ratio indicator is not sufficiently stable as an independent warning rule. This result supports the use of multi-indicator integration through the full prepatch framework and PWSI rather than relying on one local synchronization threshold alone.
+```
+
+This result strengthens the methodological motivation for PWSI.
+
+It shows that the proposed framework should not depend on any single local synchronization threshold. Instead, local synchronization should be combined with spatial connectivity, boundary rigidity, and dominant mode locking to form a more stable and interpretable warning index.
+
+## 19. Updated v2.2 Robustness Conclusion
+
+After completing PWSI threshold sensitivity, window length sensitivity, and correlation threshold sensitivity, the v2.2 synthetic robustness experiments support the following conclusions:
+
+```text
+1. PWSI_equal does not rely on a single arbitrary alarm threshold.
+2. The prepatch and PWSI framework remains stable under different sliding-window lengths in the vegetation CA system.
+3. A single hard-threshold local synchronization indicator is sensitive to the selected correlation threshold and should not be used alone as the final warning rule.
+4. The full prepatch framework and PWSI are better justified as multi-indicator integrated warning representations.
+```
+
+Overall, v2.2 strengthens the robustness evidence of the proposed framework before moving to real remote-sensing validation.
+
+The results suggest that the proposed framework should be interpreted as an integrated spatial early-warning indicator system rather than a single-threshold local synchronization detector.
+
+## 20. Next Step
+
+The next stage is:
+
+```text
+v2.3 Synthetic robustness final summary and paper-level figure/table consolidation
+```
+
+The purpose of v2.3 is to organize the existing experimental results into paper-level figures, tables, and result summaries.
+
+The next tasks include:
+
+```text
+1. Consolidate SEIR, vegetation CA, PWSI, and robustness results.
+2. Build a final main result table.
+3. Build a final robustness table.
+4. Prepare paper-level figure structure.
+5. Decide which results should be placed in the main text and which should be placed in supplementary materials.
+```
+
+After v2.3, the project can move to:
+
+```text
+v2.4 real forest disturbance remote-sensing case study
+```
