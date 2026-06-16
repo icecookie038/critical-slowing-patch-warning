@@ -245,3 +245,104 @@ Expected conclusion:
 ```text
 The proposed prepatch and PWSI framework should remain stable under reasonable sliding-window length choices.
 ```
+## 11. Window Length Sensitivity Experiment: Vegetation CA
+
+The second robustness experiment focuses on window length sensitivity.
+
+The goal of this experiment is to test whether the proposed prepatch indicators and PWSI framework depend on a single selected sliding-window length.
+
+Four window lengths were tested:
+
+```text
+5
+10
+15
+20
+```
+
+The experiment was conducted on the vegetation CA system using seed42.
+
+Three settings were evaluated:
+
+```text
+visible_patch
+visible_prepatch
+visible patch + PWSI_equal
+```
+
+Two representative models were tested:
+
+```text
+LogisticRegression
+RandomForest
+```
+
+The evaluated metrics include:
+
+```text
+Valid-window alarm rate
+Miss rate
+Lead mean
+Lead median
+Pre-window alarm rate
+Late alarm rate
+```
+
+## 12. Vegetation CA Window Length Sensitivity Results
+
+| Window | Setting            | Model              | Valid alarm | Miss rate | Lead mean | Lead median | Pre-window alarm rate | Late alarm rate |
+| -----: | ------------------ | ------------------ | ----------: | --------: | --------: | ----------: | --------------------: | --------------: |
+|      5 | visible_patch      | LogisticRegression |       1.000 |     0.000 |     26.32 |        28.0 |                  0.14 |           0.000 |
+|     10 | visible_patch      | LogisticRegression |       1.000 |     0.000 |     26.72 |        29.0 |                  0.14 |           0.000 |
+|     15 | visible_patch      | LogisticRegression |       1.000 |     0.000 |     27.20 |        29.0 |                  0.20 |           0.000 |
+|     20 | visible_patch      | LogisticRegression |       1.000 |     0.000 |     26.96 |        28.0 |                  0.16 |           0.000 |
+|      5 | visible_patch      | RandomForest       |       1.000 |     0.000 |     26.38 |        27.5 |                  0.14 |           0.000 |
+|     10 | visible_patch      | RandomForest       |       1.000 |     0.000 |     26.22 |        27.5 |                  0.14 |           0.000 |
+|     15 | visible_patch      | RandomForest       |       1.000 |     0.000 |     26.28 |        27.0 |                  0.14 |           0.000 |
+|     20 | visible_patch      | RandomForest       |       1.000 |     0.000 |     26.54 |        29.0 |                  0.18 |           0.000 |
+|      5 | visible_prepatch   | LogisticRegression |       1.000 |     0.000 |     29.30 |        30.0 |                  0.26 |           0.000 |
+|     10 | visible_prepatch   | LogisticRegression |       1.000 |     0.000 |     29.12 |        30.0 |                  0.10 |           0.000 |
+|     15 | visible_prepatch   | LogisticRegression |       1.000 |     0.000 |     28.92 |        30.0 |                  0.10 |           0.000 |
+|     20 | visible_prepatch   | LogisticRegression |       1.000 |     0.000 |     29.38 |        30.0 |                  0.22 |           0.000 |
+|      5 | visible_prepatch   | RandomForest       |       1.000 |     0.000 |     28.68 |        30.0 |                  0.20 |           0.000 |
+|     10 | visible_prepatch   | RandomForest       |       1.000 |     0.000 |     28.56 |        29.0 |                  0.12 |           0.000 |
+|     15 | visible_prepatch   | RandomForest       |       1.000 |     0.000 |     28.84 |        30.0 |                  0.16 |           0.000 |
+|     20 | visible_prepatch   | RandomForest       |       1.000 |     0.000 |     28.82 |        30.0 |                  0.18 |           0.000 |
+|      5 | visible_pwsi_equal | LogisticRegression |       1.000 |     0.000 |     27.46 |        28.0 |                  0.16 |           0.000 |
+|     10 | visible_pwsi_equal | LogisticRegression |       1.000 |     0.000 |     27.46 |        28.5 |                  0.16 |           0.000 |
+|     15 | visible_pwsi_equal | LogisticRegression |       1.000 |     0.000 |     27.02 |        28.0 |                  0.14 |           0.000 |
+|     20 | visible_pwsi_equal | LogisticRegression |       1.000 |     0.000 |     26.66 |        27.0 |                  0.08 |           0.000 |
+|      5 | visible_pwsi_equal | RandomForest       |       1.000 |     0.000 |     26.70 |        27.0 |                  0.14 |           0.000 |
+|     10 | visible_pwsi_equal | RandomForest       |       1.000 |     0.000 |     26.12 |        27.0 |                  0.14 |           0.000 |
+|     15 | visible_pwsi_equal | RandomForest       |       1.000 |     0.000 |     26.20 |        27.0 |                  0.14 |           0.000 |
+|     20 | visible_pwsi_equal | RandomForest       |       1.000 |     0.000 |     26.36 |        27.0 |                  0.16 |           0.000 |
+
+## 13. Window Length Sensitivity Interpretation
+
+The vegetation CA window length sensitivity experiment shows that the proposed framework remains stable across different sliding-window lengths.
+
+Across window lengths of 5, 10, 15, and 20, all tested settings achieved:
+
+```text
+Valid-window alarm rate = 1.000
+Miss rate = 0.000
+Late alarm rate = 0.000
+```
+
+This indicates that the warning performance is not caused by a single selected window length.
+
+The visible_prepatch setting consistently achieved the longest lead time. Its mean lead time remained close to 29 across different window lengths and models.
+
+The visible_patch baseline also remained stable, with mean lead time generally between 26 and 27.
+
+The visible patch + PWSI_equal setting provided a stable compact representation. Although its lead time was slightly lower than that of full visible_prepatch, it remained robust across all tested window lengths.
+
+## 14. Main Conclusion of Window Length Sensitivity
+
+The main conclusion is:
+
+```text
+The prepatch and PWSI framework remains robust under different sliding-window lengths in the vegetation CA system. Visible_prepatch consistently provides the strongest early-warning lead time, while visible patch + PWSI_equal provides a stable and compact applied representation.
+```
+
+This result strengthens the robustness evidence of the proposed framework before moving to real remote-sensing validation.
