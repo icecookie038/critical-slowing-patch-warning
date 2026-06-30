@@ -66,3 +66,17 @@ models/
 # Experiment logs
 runs/
 wandb/
+
+# Local result folders
+results_feature_importance/
+results_mechanism/
+results_robustness/
+results/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temporary files
+*.tmp
+.DS_Store
