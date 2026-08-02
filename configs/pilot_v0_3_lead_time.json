@@ -1,0 +1,13 @@
+{
+  "frame_features_path": "outputs/tables/case_control_features.csv",
+  "metrics_path": "outputs/tables/lead_time_metrics.csv",
+  "predictions_path": "outputs/tables/lead_time_predictions.csv",
+  "case_features_path": "outputs/tables/lead_time_case_features.csv",
+  "report_path": "outputs/reports/pilot_v0_3_lead_time_report.md",
+  "figure_path": "outputs/figures/lead_00_auc_by_cutoff.png",
+  "cutoff_hours_to_endpoint": [-72, -60, -48, -36, -24, -12, -3],
+  "trailing_window_hours": 12,
+  "ridge_c": 0.1,
+  "bootstrap_iterations": 5000,
+  "random_seed": 2026
+}

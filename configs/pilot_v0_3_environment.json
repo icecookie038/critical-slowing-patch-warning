@@ -1,0 +1,31 @@
+{
+  "case_control_manifest_path": "data/processed/case_control_track_windows.csv",
+  "cloud_frame_features_path": "outputs/tables/case_control_features.csv",
+  "era5_request_dir": "data/interim/era5_requests",
+  "era5_request_index_path": "data/interim/era5_request_index.csv",
+  "era5_raw_dir": "data/raw/era5",
+  "era5_download_log_path": "outputs/tables/era5_download_manifest.csv",
+  "environment_frame_features_path": "outputs/tables/environment_frame_features.csv",
+  "merged_frame_features_path": "outputs/tables/environment_cloud_frame_features.csv",
+  "environment_case_features_path": "outputs/tables/environment_case_features.csv",
+  "environment_metrics_path": "outputs/tables/environment_metrics.csv",
+  "environment_predictions_path": "outputs/tables/environment_predictions.csv",
+  "environment_report_path": "outputs/reports/pilot_v0_3_environment_report.md",
+  "environment_status_report_path": "outputs/reports/pilot_v0_3_environment_status.md",
+  "cds_dataset": "reanalysis-era5-pressure-levels",
+  "variables": [
+    "u_component_of_wind",
+    "v_component_of_wind",
+    "relative_humidity",
+    "vorticity"
+  ],
+  "pressure_levels_hpa": [200, 600, 700, 850],
+  "area_margin_deg": 8.0,
+  "analysis_radii_km": [300, 500],
+  "primary_radius_km": 500,
+  "max_time_offset_minutes": 90,
+  "ridge_c": 0.1,
+  "bootstrap_iterations": 5000,
+  "random_seed": 2026,
+  "source_access_date": "2026-08-02"
+}

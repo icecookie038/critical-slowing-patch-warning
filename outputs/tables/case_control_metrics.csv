@@ -1,0 +1,5 @@
+model,n_cases,n_pairs,n_features,roc_auc,pair_bootstrap_ci_low,pair_bootstrap_ci_high,pr_auc,brier_score,exact_within_pair_permutation_p_one_sided,n_exact_permutations
+cold_area,10,5,2,0.9600000000000001,0.84,1.0,0.9666666666666666,0.16921406231249292,0.0625,32
+organization_static,10,5,4,0.8,0.68,1.0,0.8583333333333332,0.22445125910015257,0.0625,32
+organization_trend,10,5,4,0.31999999999999995,0.0,0.84,0.4634920634920635,0.27068449801721056,0.75,32
+cloud_plus_organization,10,5,6,1.0,1.0,1.0,1.0,0.16260605633484426,0.0625,32

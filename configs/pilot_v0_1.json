@@ -1,0 +1,27 @@
+{
+  "ibtracs_path": "data/raw/ibtracs/ibtracs.WP.list.v04r01.csv",
+  "raw_himawari_dir": "data/raw/himawari",
+  "manifest_path": "data/interim/pilot_manifest.csv",
+  "features_path": "outputs/tables/pilot_features.csv",
+  "download_log_path": "outputs/tables/download_manifest.csv",
+  "error_log_path": "outputs/tables/processing_errors.csv",
+  "s3_base_url": "https://noaa-himawari8.s3.amazonaws.com",
+  "case_sids": [
+    "2019195N13136",
+    "2019231N13135",
+    "2019236N08143",
+    "2019243N06136",
+    "2019268N10155"
+  ],
+  "history_hours": 72,
+  "cadence_hours": 3,
+  "download_workers": 6,
+  "crop_half_width_deg": 8.0,
+  "outer_radius_km": 600.0,
+  "inner_radius_km": 200.0,
+  "cold_threshold_k": 235.0,
+  "very_cold_threshold_k": 210.0,
+  "min_patch_pixels": 9,
+  "random_seed": 2026
+}
+

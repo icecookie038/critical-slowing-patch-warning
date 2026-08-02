@@ -1,0 +1,7 @@
+scenario,model,n_cases,n_pairs,n_features,roc_auc,pair_bootstrap_ci_low,pair_bootstrap_ci_high,pr_auc,brier_score,exact_within_pair_permutation_p_one_sided,n_exact_permutations
+all_cases,metadata_only,10,5,4,0.88,0.76,1.0,0.925,0.20660002870823035,0.0625,32
+all_cases,early_cloud,10,5,2,0.11999999999999997,0.0,0.24,0.38126984126984126,0.2792264618634618,0.8125,32
+all_cases,cloud_change,10,5,2,0.92,0.76,1.0,0.9266666666666665,0.18256302968480803,0.0625,32
+all_cases,organization_change,10,5,4,0.24,0.0,0.64,0.42126984126984124,0.28951328884111993,0.8125,32
+drop_worst_matched_pair,cold_area,8,4,2,0.9375,0.8125,1.0,0.95,0.1805011130853661,0.125,16
+drop_worst_matched_pair,cloud_plus_organization,8,4,6,0.9375,0.8125,1.0,0.95,0.18766164554286183,0.125,16

@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+.deps/
+
+# Credentials and local configuration
+.cdsapirc
+.env
+.env.*
+
+# Raw and machine-local data (recreated from code/manifests)
+data/raw/
+data/interim/era5_requests/
+data/interim/pilot_manifest.csv
+data/interim/case_control_manifest.csv
+outputs/tables/download_manifest.csv
+outputs/tables/case_control_download_manifest.csv
+
+# Large or redundant local artifacts
+*.zip
+*.tar
+*.tar.gz
+*.part
+outputs/models/
+outputs/tmp/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
