@@ -1,0 +1,12 @@
+{
+  "stage": "retrospective_marsh_pilot_not_confirmatory",
+  "block_size_m": 128.0,
+  "scales_m": [16.0, 32.0, 64.0],
+  "image_size": 16,
+  "pixels_per_block": 32,
+  "hidden": 24,
+  "epochs": 25,
+  "learning_rate": 0.01,
+  "reason_for_scale": "Small source geometry cannot supply four isolated source blocks with 128m image footprints. Pilot uses max64m with128m blocks; geometry decision before model evaluation.",
+  "availability_caveat": "Static publication masks and 2005-2010 inundation are retrospective products, not prediction-time observations."
+}

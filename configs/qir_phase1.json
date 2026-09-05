@@ -1,0 +1,10 @@
+{
+  "stage": "phase1_engineering_and_small_real_pilot",
+  "block_size_m": 256.0,
+  "scales_m": [32.0, 64.0, 128.0],
+  "image_size": 16,
+  "pixels_per_block": 8,
+  "hidden": 24,
+  "epochs": 25,
+  "learning_rate": 0.01
+}

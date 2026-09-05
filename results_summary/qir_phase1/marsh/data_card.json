@@ -1,0 +1,53 @@
+{
+  "source": "https://zenodo.org/records/4998258",
+  "md5": "eb545ba9e8e68e41c7f2988157e447c7",
+  "sha256": "31a9eece0860641d179a7b6726ba7009b7a77e5b76a79e38d993088621eb5e95",
+  "stride": 2,
+  "sampling": "regular pixel subsample; not area-averaged coarse graining",
+  "pressure_availability": "static retrospective map derived from 2005-2010 water levels",
+  "mask_availability": "static published study mask; not a dated operational QA product",
+  "evidence": "retrospective pilot only",
+  "domains": [
+    {
+      "name": "Hellegat",
+      "times": [
+        1976.0,
+        1982.0,
+        1993.0,
+        1996.0,
+        1998.0,
+        2001.0,
+        2004.0,
+        2008.0,
+        2010.0,
+        2011.0,
+        2012.0
+      ],
+      "shape": [
+        11,
+        498,
+        1077
+      ],
+      "eligible_pixels": 481554
+    },
+    {
+      "name": "Paulina",
+      "times": [
+        1982.0,
+        1996.0,
+        1998.0,
+        2001.0,
+        2008.0,
+        2010.0,
+        2011.0,
+        2012.0
+      ],
+      "shape": [
+        8,
+        1187,
+        1374
+      ],
+      "eligible_pixels": 1357821
+    }
+  ]
+}

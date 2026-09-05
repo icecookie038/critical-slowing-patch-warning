@@ -1,0 +1,122 @@
+{
+  "stage": "exploratory_followup_after_viewing_original_pilot",
+  "config": {
+    "stress_knots": 4,
+    "stress_degree": 2,
+    "max_iter": 200,
+    "tolerance": 1e-08,
+    "ridge_alpha": 0.0001
+  },
+  "fits": [
+    {
+      "source": "Hellegat",
+      "target": "Paulina",
+      "converged": true,
+      "iterations": 17,
+      "calibration_offset": 4.999994710716215,
+      "calibration_at_search_boundary": true,
+      "train_pressure_range": [
+        0.1989399939775467,
+        0.3934899866580963
+      ],
+      "calibration_pressure_range": [
+        0.4085099995136261,
+        0.45052000880241394
+      ],
+      "target_pressure_range": [
+        0.32436999678611755,
+        0.4085099995136261
+      ],
+      "split_blocks": {
+        "train": [
+          "Hellegat:0:2",
+          "Hellegat:0:3",
+          "Hellegat:1:0",
+          "Hellegat:1:1",
+          "Hellegat:1:2",
+          "Hellegat:1:3"
+        ],
+        "calibration": [
+          "Hellegat:0:0",
+          "Hellegat:0:1"
+        ],
+        "test": [
+          "Paulina:1:0",
+          "Paulina:1:1",
+          "Paulina:2:0",
+          "Paulina:2:1",
+          "Paulina:2:2",
+          "Paulina:3:1",
+          "Paulina:3:2",
+          "Paulina:3:3",
+          "Paulina:4:2",
+          "Paulina:4:3"
+        ]
+      }
+    },
+    {
+      "source": "Paulina",
+      "target": "Hellegat",
+      "converged": true,
+      "iterations": 21,
+      "calibration_offset": -0.322983392018039,
+      "calibration_at_search_boundary": false,
+      "train_pressure_range": [
+        0.32436999678611755,
+        0.4085099995136261
+      ],
+      "calibration_pressure_range": [
+        0.34240999817848206,
+        0.39890000224113464
+      ],
+      "target_pressure_range": [
+        0.1989399939775467,
+        0.45052000880241394
+      ],
+      "split_blocks": {
+        "train": [
+          "Paulina:2:0",
+          "Paulina:2:1",
+          "Paulina:2:2",
+          "Paulina:3:1",
+          "Paulina:3:2",
+          "Paulina:3:3",
+          "Paulina:4:2"
+        ],
+        "calibration": [
+          "Paulina:1:0",
+          "Paulina:1:1",
+          "Paulina:4:3"
+        ],
+        "test": [
+          "Hellegat:0:0",
+          "Hellegat:0:1",
+          "Hellegat:0:2",
+          "Hellegat:0:3",
+          "Hellegat:1:0",
+          "Hellegat:1:1",
+          "Hellegat:1:2",
+          "Hellegat:1:3"
+        ]
+      }
+    }
+  ],
+  "frozen_pilot_manifest_sha256": "7baaa2c0f967bed4b761a49f4bb30bd2287a995557531b58205750db30ce4440",
+  "input_sha256": {
+    "data\\processed\\qir_marsh\\Hellegat.npz": "c4cf131b1f352381e67a7cf4be1a0e4223010faac31735227671c433ad2d1550",
+    "data\\processed\\qir_marsh\\Paulina.npz": "105e0e7cd161793150bf87bf15b87afc5824252503723c00f5224b48b3760ad2"
+  },
+  "code_sha256": {
+    "src\\qir_event\\compare_historical_baseline.py": "665061a49c1a3199e912f1f26b33efe2beef021a86701ef3b78492069e49a6c7",
+    "src\\real_data\\time_safe_survival.py": "4a2f2c38dccbd59cdcd14cb42377fdbbfb0d2066963d72202b3576fdd6135695"
+  },
+  "n_intervals": 676,
+  "n_episodes": 230,
+  "adaptation": "same v3.7 spline family; fractional trials implement equal total block weights",
+  "limitations": [
+    "single fixed pilot and spline configuration",
+    "retrospective covariate availability",
+    "QIR residual still uses its neural M0; not yet trained on the spline baseline",
+    "no new independent confirmatory cohort or second system"
+  ]
+}

@@ -1,0 +1,20 @@
+name: Research workflow tests
+on:
+  push:
+    paths: ['src/qir_event/**', 'src/real_data/**', 'tests/**', 'requirements-qir.txt', 'requirements-research-tests.txt', '.github/workflows/qir-tests.yml']
+  pull_request:
+    paths: ['src/qir_event/**', 'src/real_data/**', 'tests/**', 'requirements-qir.txt', 'requirements-research-tests.txt', '.github/workflows/qir-tests.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-research-tests.txt
+      - run: python -m pip install -r requirements-research-tests.txt
+      - run: python -m pytest tests -q

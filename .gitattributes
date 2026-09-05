@@ -1,0 +1,7 @@
+# Keep the sealed QIR source/config hashes stable on Windows checkouts.
+src/qir_event/*.py text eol=lf
+src/real_data/*.py text eol=lf
+scripts/analysis/*.py text eol=lf
+configs/*.json text eol=lf
+results/v3*/*.csv text eol=lf
+results/v3*/*.json text eol=lf

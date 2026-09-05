@@ -1,0 +1,13 @@
+term,coefficient,source,target
+intercept,-4.4102533579985135,Hellegat,Paulina
+stress__inundation_fraction_sp_0,0.06245326651434471,Hellegat,Paulina
+stress__inundation_fraction_sp_1,1.9550731342416732,Hellegat,Paulina
+stress__inundation_fraction_sp_2,0.8930185195439958,Hellegat,Paulina
+stress__inundation_fraction_sp_3,2.430154553124905,Hellegat,Paulina
+elapsed__log_elapsed_years_start,-0.6007267408918271,Hellegat,Paulina
+intercept,-4.8697941605680315,Paulina,Hellegat
+stress__inundation_fraction_sp_0,-1.0906945148430884,Paulina,Hellegat
+stress__inundation_fraction_sp_1,-0.8341758374364238,Paulina,Hellegat
+stress__inundation_fraction_sp_2,0.48782904936048793,Paulina,Hellegat
+stress__inundation_fraction_sp_3,0.6184057858374378,Paulina,Hellegat
+elapsed__log_elapsed_years_start,-1.5424565943202928,Paulina,Hellegat

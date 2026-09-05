@@ -1,0 +1,7 @@
+block_width_m,train_site,test_site,deviance_change_vs_stress_percent,log_rmse_change_vs_stress_percent
+32.0,Paulina,Hellegat,-9.998235119019794,-3.962103490728693
+32.0,Hellegat,Paulina,25.118389872096643,18.916100548426552
+64.0,Paulina,Hellegat,-10.019572736630828,-4.050390416556544
+64.0,Hellegat,Paulina,-8.17224090883323,2.332701430981808
+128.0,Paulina,Hellegat,-5.097690266053951,-1.6076662666993171
+128.0,Hellegat,Paulina,-32.86703903709444,-17.439270164901753

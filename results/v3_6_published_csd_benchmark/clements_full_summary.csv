@@ -1,0 +1,7 @@
+sampling_interval_days,metric,class,n_trials,n_tubes,eligible_fraction,signal_rate_all,signal_rate_eligible,normalized_metric_score
+1,acf_cv,constant,10,10,1.0,0.3,0.3,0.012500000000000011
+1,acf_cv,deteriorating,16,16,1.0,0.3125,0.3125,0.012500000000000011
+1,cv,constant,10,10,1.0,0.2,0.2,0.3625
+1,cv,deteriorating,16,16,1.0,0.5625,0.5625,0.3625
+1,published_trait,constant,10,10,1.0,0.1,0.1,0.525
+1,published_trait,deteriorating,16,16,1.0,0.625,0.625,0.525
