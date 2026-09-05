@@ -1,0 +1,13 @@
+turf_threshold_score,minimum_turf_cover_percent,metric,year_adjusted_slope,one_sided_block_permutation_p
+1,25,turf_fraction,0.00892,0.001
+1,25,component_density,-0.00035333333333333327,0.976
+1,25,largest_turf_patch_fraction,0.00855,0.001
+1,25,edge_density,0.001330188679245283,0.056
+2,50,turf_fraction,0.00765,0.001
+2,50,component_density,0.0002,0.166
+2,50,largest_turf_patch_fraction,0.005706666666666667,0.003
+2,50,edge_density,0.003439622641509434,0.001
+3,75,turf_fraction,0.00529,0.002
+3,75,component_density,0.00071,0.002
+3,75,largest_turf_patch_fraction,0.00302,0.005
+3,75,edge_density,0.0039660377358490565,0.001

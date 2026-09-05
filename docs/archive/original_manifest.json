@@ -1,0 +1,309 @@
+{
+  "changed_file_count": 60,
+  "excluded_png_count": 6,
+  "files": [
+    {
+      "bytes": 7136,
+      "path": "README.md",
+      "sha256": "b6098f659135d5018f5a758f6661eda8768bcd37de359946e407735de7a341de"
+    },
+    {
+      "bytes": 2450,
+      "path": "docs/RECOVERY_v3_7_2026-09-05.md",
+      "sha256": "74953a67efd829f7f380ab2976789667e9a415e46ffafdd3cca714c638b9b3e0"
+    },
+    {
+      "bytes": 4226,
+      "path": "docs/data_sources/published_csd_benchmarks.md",
+      "sha256": "f5753fcb5c0929ab246a2e3446fd0c12b37febaa328d6eb3f0345714d8064dcd"
+    },
+    {
+      "bytes": 8751,
+      "path": "docs/v3_5_ecological_recovery_spatial_explanation.md",
+      "sha256": "2a265a419eac9f138debdebdd18412510f31d9b67c1db4a4dcdd44d7a8855659"
+    },
+    {
+      "bytes": 9372,
+      "path": "docs/v3_6_published_csd_benchmark_precision_audit.md",
+      "sha256": "c33b153118a1c9c4e4b587985fbfc20db0a769f19792fa87ed6dfa4914d5db6c"
+    },
+    {
+      "bytes": 5757,
+      "path": "docs/v3_7_time_safe_event_survival.md",
+      "sha256": "535e1977806ff5b4ce2fb78094cf5065374ba61d3288e88f72f2a65dd2ee24e7"
+    },
+    {
+      "bytes": 115,
+      "path": "requirements.txt",
+      "sha256": "8feed3330678e6163271af75a93ff9056c661077eecef27a1c2370d8e049392a"
+    },
+    {
+      "bytes": 3306,
+      "path": "results/v3_5_local_recovery_spatial_explanation/cross_site_model_metrics.csv",
+      "sha256": "a59d0b124cdd7a2b024aa3a55ce0795b6647263d2b24a3471e2e5bc8e12472fe"
+    },
+    {
+      "bytes": 770,
+      "path": "results/v3_5_local_recovery_spatial_explanation/decision.json",
+      "sha256": "0c2da3ca409383f84fb0ac32b295556a918ea3c815fe502fa318d0e553eecd29"
+    },
+    {
+      "bytes": 415,
+      "path": "results/v3_5_local_recovery_spatial_explanation/direct_recovery_replication_summary.csv",
+      "sha256": "76e40970906d2272adb111274f6f378113e579b548d40d494a819e133692b92c"
+    },
+    {
+      "bytes": 448,
+      "path": "results/v3_5_local_recovery_spatial_explanation/multiscale_field_consistency.csv",
+      "sha256": "3ffde2283b3480f872242f05583c4a6f5d1f59d84af81e34870f0baf27b9b371"
+    },
+    {
+      "bytes": 3147,
+      "path": "results/v3_5_local_recovery_spatial_explanation/patch_direction_consistency.csv",
+      "sha256": "f3ac6ba1de2053f262c9cd63bd302a9a1275d25d7dc290830634eeda8ccc4e36"
+    },
+    {
+      "bytes": 4698,
+      "path": "results/v3_5_local_recovery_spatial_explanation/patch_residual_associations.csv",
+      "sha256": "c12d5138dc4b79910574558b7e12b7157ed5b16e9573bacd2fb9ee3b6c9185c8"
+    },
+    {
+      "bytes": 212309,
+      "path": "results/v3_5_local_recovery_spatial_explanation/patch_spatial_explanation_64m.png",
+      "sha256": "9fd3bb4a0bbf6ee8bc187a387c0dcb649b8bbdf3e1611e7f5cd3f65dd82ab4fa"
+    },
+    {
+      "bytes": 4802,
+      "path": "results/v3_5_local_recovery_spatial_explanation/report.md",
+      "sha256": "09d2bde1aff15b45118f8289fb8d046b1d7c550a6892dc512516b24dd10e3ada"
+    },
+    {
+      "bytes": 276727,
+      "path": "results/v3_5_local_recovery_spatial_explanation/summary_figure.png",
+      "sha256": "3fddb6422827d31e7bbff5853b8eb01711c17f207fc1ea1fcafaa6f3869cb53b"
+    },
+    {
+      "bytes": 308,
+      "path": "results/v3_5_local_recovery_spatial_explanation/supported_local_units.csv",
+      "sha256": "23e3abbe5eea0a6de802396a12b784f6d8d0ae62ec2076902a2296581cd7b360"
+    },
+    {
+      "bytes": 2090,
+      "path": "results/v3_6_published_csd_benchmark/benchmark_registry.csv",
+      "sha256": "55408f1e392ce93c9d32d172d0b4956d77628dade3b4ed5b742d2277d8251d43"
+    },
+    {
+      "bytes": 309373,
+      "path": "results/v3_6_published_csd_benchmark/benchmark_summary.png",
+      "sha256": "95bbec9ea1d410ee81f76a9a3e6afd0b492728b537130215eac81782023ec751"
+    },
+    {
+      "bytes": 457,
+      "path": "results/v3_6_published_csd_benchmark/clements_full_summary.csv",
+      "sha256": "9edb9e98d4040346f809ad74802a3b626cf19ed744a8daf9c0d4c5cca9f44ab8"
+    },
+    {
+      "bytes": 1333,
+      "path": "results/v3_6_published_csd_benchmark/clements_temporal_downsampling_summary.csv",
+      "sha256": "5638d13127748e8f19d26ec3ba01548eb782de6a7cec038dbb1f5135dac8f77e"
+    },
+    {
+      "bytes": 1805,
+      "path": "results/v3_6_published_csd_benchmark/dai_full_replication.csv",
+      "sha256": "8d9a1b6e18a0f21e3ef50fd97931474d3a54c087996eee8571d9b95ca9347b73"
+    },
+    {
+      "bytes": 1920,
+      "path": "results/v3_6_published_csd_benchmark/dai_replicate_precision_summary.csv",
+      "sha256": "1660612fb6a8edd754eb3a559085b4b77e71eb90b69b8b931cd83d85d2cbce04"
+    },
+    {
+      "bytes": 740,
+      "path": "results/v3_6_published_csd_benchmark/decision.json",
+      "sha256": "7ea646abe3eef68dee991e94e5d57525a7a09a450bbbee4b29531a5bf4c23107"
+    },
+    {
+      "bytes": 958,
+      "path": "results/v3_6_published_csd_benchmark/input_checksums.csv",
+      "sha256": "f5b31f3fde46e1591106210eb009d37289115564c2d5fb8404e04104ee331696"
+    },
+    {
+      "bytes": 88057,
+      "path": "results/v3_6_published_csd_benchmark/macroalgal_patch_explanation.png",
+      "sha256": "6b669397ee5fb57ad5dea4fe9f6caec520376e07d6baa669e3df714693f4054e"
+    },
+    {
+      "bytes": 11994,
+      "path": "results/v3_6_published_csd_benchmark/report.md",
+      "sha256": "0d90086c46863e5c552ab6b958230340b76f2fa6d24faa70885fa545c11716cf"
+    },
+    {
+      "bytes": 1062,
+      "path": "results/v3_6_published_csd_benchmark/rindi_full_replication.csv",
+      "sha256": "e0a0ff92182d5710c565938462f15b0a21504c720e624e935f682247ff3e3dda"
+    },
+    {
+      "bytes": 620,
+      "path": "results/v3_6_published_csd_benchmark/rindi_patch_threshold_sensitivity.csv",
+      "sha256": "4f9141d53663843e7a41921802b03a88a24be4ed93dbd7fc486bd2a90c5d1e6d"
+    },
+    {
+      "bytes": 5213,
+      "path": "results/v3_6_published_csd_benchmark/rindi_spatial_subsampling_summary.csv",
+      "sha256": "056e1e0111aed97a39129b041c817d7a66665ff67cd6d6769dc60b0365079279"
+    },
+    {
+      "bytes": 692,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_candidate_scale_regularization_audit.csv",
+      "sha256": "f8ca2ee94f740e829e7e60102aa49a44529f63a1fd19f46e702b8c222bb8a713"
+    },
+    {
+      "bytes": 156,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_candidate_scale_support.csv",
+      "sha256": "5e1232184f8143a5c3012b1c71313bda95288ebed454e0e1545d68ed379cd46e"
+    },
+    {
+      "bytes": 4537,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_precision_audit.md",
+      "sha256": "59596c4fd3d6de17c94d2509e97f62a1068a55d516ffd1c43caf506a1196d086"
+    },
+    {
+      "bytes": 265523,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_precision_audit.png",
+      "sha256": "a05cb682c33130d0956572edfbc0df9eefe9bb9f7bd205dae1c4ba7163270a01"
+    },
+    {
+      "bytes": 901,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_precision_decision.json",
+      "sha256": "0c5e3e1f5a07ec465b85387a421cefbdbfa371acb40f62c75be3c7373cde6b15"
+    },
+    {
+      "bytes": 629,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_regularization_audit.csv",
+      "sha256": "6e1c131ef7b3bf66d03bbd82b814097637de5834e5e3d10d441626a2fc88ca3a"
+    },
+    {
+      "bytes": 2079,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_resolution_audit.csv",
+      "sha256": "313b7c8bdecdb23410e8760c6cf669eccbf1d08d6bf9ef6aa4a3da925ee49f34"
+    },
+    {
+      "bytes": 466,
+      "path": "results/v3_6_published_csd_benchmark/salt_marsh_scale_audit.csv",
+      "sha256": "7e213487dc7fd5a93d44c8380483e4682d9ece6b6b7ea3ae87e4f9a40dab9a1f"
+    },
+    {
+      "bytes": 5449,
+      "path": "results/v3_7_time_safe_event_survival/calibration_bins.csv",
+      "sha256": "31f111f497bd8a75de9b551a885c5ede1812412385f5fa7036f6c0d52406a4d1"
+    },
+    {
+      "bytes": 1685,
+      "path": "results/v3_7_time_safe_event_survival/cross_site_survival_metrics.csv",
+      "sha256": "70df29c29821f9d7acaca149776accee9d92face239fa6c5663821df51e9aa4b"
+    },
+    {
+      "bytes": 342,
+      "path": "results/v3_7_time_safe_event_survival/event_retention_summary.csv",
+      "sha256": "7b46ccdb03d217dcff496f3b9e40248586ef9b8db1355ba5a105f1761916f95c"
+    },
+    {
+      "bytes": 397,
+      "path": "results/v3_7_time_safe_event_survival/leakage_audit.json",
+      "sha256": "d89c8e1a5cfc8dd5644ee7f33aa42a41f47972437d6292f122ec659be4e53eee"
+    },
+    {
+      "bytes": 5943,
+      "path": "results/v3_7_time_safe_event_survival/model_coefficients.csv",
+      "sha256": "b41427a35b5d2d0a6121433e9ebc80e9858bee9b90ca6fe6439e25ebb5d1f581"
+    },
+    {
+      "bytes": 5163,
+      "path": "results/v3_7_time_safe_event_survival/report.md",
+      "sha256": "c17c840bbc7e5313e497efa3ec93b5d0cabefb7455e8db720f5059fd334a153d"
+    },
+    {
+      "bytes": 1182,
+      "path": "results/v3_7_time_safe_event_survival/spatial_block_bootstrap.csv",
+      "sha256": "872b76b2e646c478ecc44f3655dd32fbc3d99ab19beda89ec6fe333f5df64540"
+    },
+    {
+      "bytes": 265433,
+      "path": "results/v3_7_time_safe_event_survival/time_safe_survival_summary.png",
+      "sha256": "d551fd8ec9bdcefb8a224d6a666bd5c3c200917122d9323b4ebd2d12cca64776"
+    },
+    {
+      "bytes": 19765,
+      "path": "scripts/analysis/run_v3_5_local_recovery_spatial_explanation.py",
+      "sha256": "383116136593d612e28f79b2e7254556218679d139142e85463e65afe7550c47"
+    },
+    {
+      "bytes": 28378,
+      "path": "scripts/analysis/run_v3_6_published_csd_benchmark.py",
+      "sha256": "2606cb70988d7a792e38c892021641295900928a5b7253d8f8590ee6228b0d83"
+    },
+    {
+      "bytes": 3890,
+      "path": "scripts/analysis/run_v3_6_salt_marsh_precision_audit.py",
+      "sha256": "e97f87ccca794ce705177f2a742f5fa53101b5a53e20adc64da82188e67d065a"
+    },
+    {
+      "bytes": 15843,
+      "path": "scripts/analysis/run_v3_7_time_safe_event_survival.py",
+      "sha256": "5dd748745705f303a4663bafe77f1d126ed5babb363cc36df08d4100b01e8e7e"
+    },
+    {
+      "bytes": 15467,
+      "path": "scripts/analysis/summarize_v3_6_salt_marsh_precision_audit.py",
+      "sha256": "74ca9c4705b3c93048a2dc8cfd7deb1bf73a5eabe0d0356ec26c4faed6ca6ad1"
+    },
+    {
+      "bytes": 6713,
+      "path": "scripts/download_published_csd_benchmarks.py",
+      "sha256": "261c9150927462c71d4a2f8dc9fea9e5b5f9e78bc0198d07b77689f44acecbe5"
+    },
+    {
+      "bytes": 2997,
+      "path": "scripts/download_tidal_marsh_data.py",
+      "sha256": "b8b67f36f47bbc9b5ef2e90ba1c25f15dc97ab7e61bfb0ab40e6c830c898a02b"
+    },
+    {
+      "bytes": 72,
+      "path": "src/real_data/__init__.py",
+      "sha256": "550dde58920018c3af8c8668aa016d076aca02562e806fe505bd210b586d1058"
+    },
+    {
+      "bytes": 36450,
+      "path": "src/real_data/published_csd_benchmarks.py",
+      "sha256": "1a7e6ecb8c2c0565837d6faa98980091a078d35aff0de6fdf495fe82f00d251e"
+    },
+    {
+      "bytes": 14868,
+      "path": "src/real_data/recovery_spatial_models.py",
+      "sha256": "a19e16b70bf2163a495475bb71051da61bcbcb6463f1d2276f8ddc5742855122"
+    },
+    {
+      "bytes": 28162,
+      "path": "src/real_data/tidal_marsh.py",
+      "sha256": "835259ccce972649fe9ab70d3f0adf3373470e4c7367d99c2e4b59186a4de21a"
+    },
+    {
+      "bytes": 25702,
+      "path": "src/real_data/time_safe_survival.py",
+      "sha256": "4a2f2c38dccbd59cdcd14cb42377fdbbfb0d2066963d72202b3576fdd6135695"
+    },
+    {
+      "bytes": 2624,
+      "path": "tests/test_published_csd_benchmarks.py",
+      "sha256": "c44b3f2f45690c18807995931084eb53870e82340982c4cee42c57d47d2ddfed"
+    },
+    {
+      "bytes": 13130,
+      "path": "tests/test_tidal_marsh_local_recovery.py",
+      "sha256": "0891beb1f7a958dc7057bd2d2ded225b136a7e5631cdbd1cdbac932d4b829d10"
+    }
+  ],
+  "included_csv_count": 25,
+  "source_commit": "9473acb724ff67c9780f7a80c4cdc01c135c157f",
+  "source_parent": "945804cf54c34d54bb017ec0e132ee2acbd7f462"
+}

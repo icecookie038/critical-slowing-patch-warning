@@ -1,5 +1,11 @@
 # Ecological slowing-down benchmarks with spatial patch explanation
 
+**科研入口：** [当前工作与下一步](docs/research_start_here_zh.md) ·
+[历史归档与校验](docs/archive/README.md) ·
+[QIR 原型运行](README-QIR.md) ·
+[论文内部草稿](manuscript/qir_pilot_draft_zh.md)。
+以下保留 v3.7 研究背景；QIR 先导试验及其基线校准问题请以科研入口中的最新记录为准。
+
 This repository studies ecological critical slowing down using **direct recovery
 after disturbance** as the primary resilience measurement. Vegetation patches
 are retained only as a secondary description of where slow recovery is spatially

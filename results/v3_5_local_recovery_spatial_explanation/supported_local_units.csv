@@ -1,0 +1,7 @@
+site,block_width_m,supported_units,represented_blocks,recoveries,exposure_years
+Hellegat,32.0,411,112,439154,4459786.0
+Hellegat,64.0,248,34,440401,4519364.0
+Hellegat,128.0,137,10,440789,4541974.0
+Paulina,32.0,274,136,451067,3431794.0
+Paulina,64.0,142,46,451488,3441236.0
+Paulina,128.0,73,15,451694,3456375.0

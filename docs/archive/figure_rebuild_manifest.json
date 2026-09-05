@@ -1,0 +1,66 @@
+{
+  "input_sha256": {
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat1976bin.tif": "d52fea434983177773415b2919f0ea3cb21468e69bfa9e803fa6d1374320825d",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat1982bin.tif": "6b67e986dc61fd33ced98033748c80c9b1cf8b79cffa81167dd927d3c041cb92",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat1993bin.tif": "b5266f3408c3c68743c78e11419de94c3c71df346c6c857b5824fd71e342b0f3",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat1996bin.tif": "c8c0f770d43d881b23876119bad065958feac78d99ac5af791914e722faf1843",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat1998bin.tif": "e95da1241f1c874fa917055729c6e76bf43e4a7ca08f415212ce47e4d25c6d07",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat2001bin.tif": "a26d0f5e45a57b8afc7fb6235d13538d7ae4d21cc7d9ab7c93fdf5b9870501c9",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat2004bin.tif": "eb4fd7e6d07304bd25a35499a6006bc0443a364c683aa08c94f67f6abfe5d72f",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat2008bin.tif": "b4aa02070466f583b825a60b00594224b1c944ec6e39d4f33e4bb69f02b3e572",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat2010bin.tif": "ec3908f5528b08ec259f5b3a7876be9447161dd2e98f70cf8ac1ab7639aeaa3e",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat2010fcc.tif": "76048fff48e4eef7583a66e39ce2de2ffce370fc9b6e7c63ae6119737c912dd5",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat2011bin.tif": "6ec589224aa201567cd621019b0826916a22a3cff8fd40c15207d862f0469dc0",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat2012bin.tif": "ebd0d05deabd5f065438e9fe5edca54c2ba091d919fda0537611552ed52d8ce5",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat_baseelevation.txt": "02800db82cbe846249e0a575b97479658b833392b105cea8599bf18797161978",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat_IFmap.txt": "da35e84d7ebc476e38a738fbdc8132b3e42446a6e85261697cb7e0e56b5f3a7f",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat_mask.tif": "ece7524b09d57fdf489ae945449c248f27e1a198354df4de7f2db8084e67372e",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Hellegat\\Hellegat_Trmap.png": "be72b207f47d9b9bcb2d520f7fc4144548994a6a2d7ce5981b92d7bb5efc889c",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina1982bin.tif": "d7e0af920ae5d2124789f146d8d7f7245869cae1c7bbf199fd623106ed5a5835",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina1996bin.tif": "83e4aabc254feea94e4b8c14b4abc2d4fcc78b8534c712695640d6fbdce528cd",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina1998bin.tif": "3138de6cb756024dec7e00fa137d18ac7a0b152159ff6f7192360d5c8463b7c6",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina2001bin.tif": "690e8646515b686247617c0abf78b25a24aedb0bcfc693ba3b48e182b9289ca4",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina2008bin.tif": "dfa9d3915ae3c5b43e6f3ac576906558f6955345da24a783b129caf096931df9",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina2010bin.tif": "4a24926b9ed6cc36800b34c4260e1f125cdb3339d655a95e5d2bdb25ded561f3",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina2010fcc.tif": "effa6cb5a1eb75c7dc088a85ab9dc336c92c8c9754624df0b730cbfa567aefe9",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina2011bin.tif": "4d47b7d1ae19db394db9acf26a9534aff9a452bfd03f6bf4d32551084b8c99d3",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina2012bin.tif": "0782b5febdf79790584369d631ef35086c5db6fe7448f4275b50849d0e38376b",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina_baseelevation.txt": "529d7e47d81511e8ba15d0cfd2d1d82abc2da87655be8c213ef5effb22b0f790",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina_IFmap.txt": "a08a3f20baebefcbddb68fbda1b44686fa450ebc0048c1703c4543ea6737d1c3",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina_mask.tif": "70d7707c8b006c6b3bea4b168d8285babad409ab5d66632594d08d077ed10e7a",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\Paulina\\Paulina_Trmap.png": "f6b114e29afc12bf59de7116e400ab819f6d0e5d70c746fb69089341c946a4ef",
+    "data\\raw\\tidal_marsh\\Data Bundle NCOMMS\\Data\\data\\WaterlevelsTerneuzen2005-2010.txt": "07a7038759c84bf591af129babfc9fa589cc8bbed2d430aa1d3512c2b163609b",
+    "data\\raw\\csd_benchmark\\rindi_2018\\Exp_data_2014.txt": "f6a1f6b2cf9d267a652895ecfc652b7fff31d74acac114e56d3e7caaa377dd18",
+    "data\\raw\\csd_benchmark\\rindi_2018\\Exp_data_2015.txt": "102c40a647828897306d2ba5dcef4709428f1ac271363d9ad654de1bcc097e15"
+  },
+  "code_sha256": {
+    "src\\real_data\\published_csd_benchmarks.py": "03a7bb056496cfa63eb1b69bb752abde0eea5048cd74dcccb6027e2c2bed952a",
+    "src\\real_data\\recovery_spatial_models.py": "a19e16b70bf2163a495475bb71051da61bcbcb6463f1d2276f8ddc5742855122",
+    "src\\real_data\\tidal_marsh.py": "835259ccce972649fe9ab70d3f0adf3373470e4c7367d99c2e4b59186a4de21a",
+    "src\\real_data\\time_safe_survival.py": "4a2f2c38dccbd59cdcd14cb42377fdbbfb0d2066963d72202b3576fdd6135695",
+    "src\\real_data\\__init__.py": "550dde58920018c3af8c8668aa016d076aca02562e806fe505bd210b586d1058",
+    "scripts\\analysis\\rebuild_archive_figures.py": "63bc0d62e934363bc3739576ebfbcd816c2d3803b1c054b6492c9b436c224f94",
+    "scripts\\analysis\\run_v3_5_local_recovery_spatial_explanation.py": "383116136593d612e28f79b2e7254556218679d139142e85463e65afe7550c47",
+    "scripts\\analysis\\run_v3_6_published_csd_benchmark.py": "2606cb70988d7a792e38c892021641295900928a5b7253d8f8590ee6228b0d83",
+    "scripts\\analysis\\summarize_v3_6_salt_marsh_precision_audit.py": "74ca9c4705b3c93048a2dc8cfd7deb1bf73a5eabe0d0356ec26c4faed6ca6ad1"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "matplotlib": "3.11.1"
+  },
+  "historical_result_sha256": {
+    "results\\v3_5_local_recovery_spatial_explanation\\patch_residual_associations.csv": "c12d5138dc4b79910574558b7e12b7157ed5b16e9573bacd2fb9ee3b6c9185c8",
+    "results\\v3_6_published_csd_benchmark\\salt_marsh_resolution_audit.csv": "313b7c8bdecdb23410e8760c6cf669eccbf1d08d6bf9ef6aa4a3da925ee49f34",
+    "results\\v3_6_published_csd_benchmark\\salt_marsh_regularization_audit.csv": "6e1c131ef7b3bf66d03bbd82b814097637de5834e5e3d10d441626a2fc88ca3a",
+    "results\\v3_6_published_csd_benchmark\\salt_marsh_scale_audit.csv": "7e213487dc7fd5a93d44c8380483e4682d9ece6b6b7ea3ae87e4f9a40dab9a1f",
+    "results\\v3_6_published_csd_benchmark\\salt_marsh_candidate_scale_regularization_audit.csv": "f8ca2ee94f740e829e7e60102aa49a44529f63a1fd19f46e702b8c222bb8a713"
+  },
+  "outputs": {
+    "macroalgal_patch_explanation.png": "d2aa3f09880cfdafc21a2cfd6dab0901b32ede68d3780d375e39d5eb905a37a3",
+    "patch_spatial_explanation_64m.png": "1dd7842760f3222e068a2ab541906afa6c2c62af7a5cbf3425fe0891baa10633",
+    "salt_marsh_precision_audit.png": "a34808bfa5011e2bfa02831f9ba786e0d840dfd56f26ea88f56e376ebdf3778e"
+  },
+  "status": "regenerated_figures_not_original_png_bytes"
+}
