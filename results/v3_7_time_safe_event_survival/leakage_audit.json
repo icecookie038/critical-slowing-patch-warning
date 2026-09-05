@@ -1,0 +1,14 @@
+{
+  "Hellegat": {
+    "pre_loss_strictly_before_origin": true,
+    "current_patch_not_after_risk_start": true,
+    "positive_follow_up_intervals": true,
+    "events_do_not_exceed_risk_set": true
+  },
+  "Paulina": {
+    "pre_loss_strictly_before_origin": true,
+    "current_patch_not_after_risk_start": true,
+    "positive_follow_up_intervals": true,
+    "events_do_not_exceed_risk_set": true
+  }
+}

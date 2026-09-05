@@ -1,0 +1,28 @@
+{
+  "direct_recovery_replication": "PASS",
+  "local_recovery_data": "PASS",
+  "independent_patch_increment": "NOT ESTABLISHED",
+  "patch_role": "secondary spatial explanation",
+  "primary_block_width_m": 64.0,
+  "patch_resolution_m": 1.0,
+  "model_feature_groups": {
+    "stress_only": [],
+    "stress_plus_static_patch": [
+      "coverage_mean",
+      "component_density_mean",
+      "largest_component_fraction_mean",
+      "edge_density_mean"
+    ],
+    "stress_plus_all_patch": [
+      "coverage_mean",
+      "component_density_mean",
+      "largest_component_fraction_mean",
+      "edge_density_mean",
+      "turnover_rate",
+      "coverage_change_rate",
+      "fragmentation_change_rate",
+      "edge_change_rate",
+      "largest_component_change_rate"
+    ]
+  }
+}
