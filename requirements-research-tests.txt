@@ -1,0 +1,5 @@
+-r requirements-qir.txt
+matplotlib>=3.8
+pillow>=10
+xlrd>=2
+scikit-misc>=0.5

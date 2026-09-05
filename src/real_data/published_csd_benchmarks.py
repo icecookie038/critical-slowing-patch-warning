@@ -777,8 +777,9 @@ def compute_rindi_metrics(
 
 def _year_adjusted_slope(frame: pd.DataFrame, metric: str) -> float:
     subset = frame[["year", "removal_percent", metric]].dropna()
-    x = subset["removal_percent"].to_numpy(dtype=float)
-    y = subset[metric].to_numpy(dtype=float)
+    # Pandas 3 may expose read-only arrays; centering needs owned buffers.
+    x = subset["removal_percent"].to_numpy(dtype=float, copy=True)
+    y = subset[metric].to_numpy(dtype=float, copy=True)
     years = subset["year"].to_numpy()
     for year in np.unique(years):
         selection = years == year

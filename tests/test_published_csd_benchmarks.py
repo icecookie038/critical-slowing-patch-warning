@@ -68,9 +68,12 @@ class SpatialBenchmarkTests(unittest.TestCase):
                         "metric": removal + (year - 2014) * 3.0,
                     }
                 )
+        frame = pd.DataFrame(rows)
+        original = frame.copy(deep=True)
         slope, p_value = blocked_permutation_slope(
-            pd.DataFrame(rows), "metric", n_permutations=99, seed=4
+            frame, "metric", n_permutations=99, seed=4
         )
+        pd.testing.assert_frame_equal(frame, original)
         self.assertAlmostEqual(slope, 1.0)
         self.assertGreaterEqual(p_value, 0.01)
         self.assertLessEqual(p_value, 0.10)
