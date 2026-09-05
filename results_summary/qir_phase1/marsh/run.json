@@ -1,0 +1,162 @@
+{
+  "evidence": "real_data_pilot_not_confirmatory",
+  "seed": 2026,
+  "config": {
+    "stage": "retrospective_marsh_pilot_not_confirmatory",
+    "block_size_m": 128.0,
+    "scales_m": [
+      16.0,
+      32.0,
+      64.0
+    ],
+    "image_size": 16,
+    "pixels_per_block": 32,
+    "hidden": 24,
+    "epochs": 25,
+    "learning_rate": 0.01,
+    "reason_for_scale": "Small source geometry cannot supply four isolated source blocks with 128m image footprints. Pilot uses max64m with128m blocks; geometry decision before model evaluation.",
+    "availability_caveat": "Static publication masks and 2005-2010 inundation are retrospective products, not prediction-time observations."
+  },
+  "input_sha256": {
+    "data\\processed\\qir_marsh\\Hellegat.npz": "c4cf131b1f352381e67a7cf4be1a0e4223010faac31735227671c433ad2d1550",
+    "data\\processed\\qir_marsh\\Paulina.npz": "105e0e7cd161793150bf87bf15b87afc5824252503723c00f5224b48b3760ad2"
+  },
+  "code_sha256": {
+    "src\\qir_event\\__init__.py": "3acfa389192e4fcc106787593fc02bb2721f3d95163ac6e93ef95ef052787446",
+    "src\\qir_event\\events.py": "490b59956dac8add6836adfdc845a4533edd4fec0e2c1c668a9d3841899be048",
+    "src\\qir_event\\experiment.py": "0cf62e0f6328d2a68ecb56a3cc01544ed072cf0faab9a708acf1a49af7c13f92",
+    "src\\qir_event\\marsh_adapter.py": "1462281c3fc7c9f17f1bd58a22c2b9bd8f20ae9c8228f74a21b71b3c0c608376",
+    "src\\qir_event\\model.py": "45ce4d406a5d892b194ddf128ea41273bdc0ac60eac3afdf6cc21a29cea7bb46",
+    "src\\qir_event\\validation.py": "de0f5af7022db03cb8bb7482bfdba34d38306250a5b621fe996614aa444931a4",
+    "configs/qir_marsh_pilot.json": "5b6890df99f2d8dfec2441f6bedff4dc1197014ca498ffc81db94903809f7228"
+  },
+  "code_commit": "945804cf54c34d54bb017ec0e132ee2acbd7f462",
+  "dirty_worktree": true,
+  "python": "3.12.14",
+  "torch": "2.14.0+cpu",
+  "numpy": "2.5.2",
+  "training_losses": {
+    "Hellegat->Paulina:baseline": {
+      "first": 1.8755422979593277,
+      "last": 0.47162894532084465,
+      "epochs": 25
+    },
+    "Hellegat->Paulina:quality": {
+      "first": 0.5439120680093765,
+      "last": 0.20653307158499956,
+      "epochs": 25
+    },
+    "Hellegat->Paulina:spatial": {
+      "first": 0.4497768208384514,
+      "last": 0.21551999892108142,
+      "epochs": 25
+    },
+    "Hellegat->Paulina:qir": {
+      "first": 0.4497768208384514,
+      "last": 0.21362236177083105,
+      "epochs": 25
+    },
+    "Paulina->Hellegat:baseline": {
+      "first": 1.5293396785855293,
+      "last": 0.4483092799782753,
+      "epochs": 25
+    },
+    "Paulina->Hellegat:quality": {
+      "first": 0.5034602358937263,
+      "last": 0.2815744811668992,
+      "epochs": 25
+    },
+    "Paulina->Hellegat:spatial": {
+      "first": 0.4293668903410435,
+      "last": 0.24922440201044083,
+      "epochs": 25
+    },
+    "Paulina->Hellegat:qir": {
+      "first": 0.4293668903410435,
+      "last": 0.2688775444403291,
+      "epochs": 25
+    }
+  },
+  "n_intervals": 676,
+  "n_episodes": 230,
+  "splits": [
+    {
+      "source": "Hellegat",
+      "target": "Paulina",
+      "split_blocks": {
+        "train": [
+          "Hellegat:0:2",
+          "Hellegat:0:3",
+          "Hellegat:1:0",
+          "Hellegat:1:1",
+          "Hellegat:1:2",
+          "Hellegat:1:3"
+        ],
+        "calibration": [
+          "Hellegat:0:0",
+          "Hellegat:0:1"
+        ],
+        "test": [
+          "Paulina:1:0",
+          "Paulina:1:1",
+          "Paulina:2:0",
+          "Paulina:2:1",
+          "Paulina:2:2",
+          "Paulina:3:1",
+          "Paulina:3:2",
+          "Paulina:3:3",
+          "Paulina:4:2",
+          "Paulina:4:3"
+        ]
+      },
+      "train_intervals": 207,
+      "calibration_intervals": 104,
+      "test_intervals": 365,
+      "support_threshold": 1.202138818796403,
+      "accepted_fraction": 1.0
+    },
+    {
+      "source": "Paulina",
+      "target": "Hellegat",
+      "split_blocks": {
+        "train": [
+          "Paulina:2:0",
+          "Paulina:2:1",
+          "Paulina:2:2",
+          "Paulina:3:1",
+          "Paulina:3:2",
+          "Paulina:3:3",
+          "Paulina:4:2"
+        ],
+        "calibration": [
+          "Paulina:1:0",
+          "Paulina:1:1",
+          "Paulina:4:3"
+        ],
+        "test": [
+          "Hellegat:0:0",
+          "Hellegat:0:1",
+          "Hellegat:0:2",
+          "Hellegat:0:3",
+          "Hellegat:1:0",
+          "Hellegat:1:1",
+          "Hellegat:1:2",
+          "Hellegat:1:3"
+        ]
+      },
+      "train_intervals": 206,
+      "calibration_intervals": 159,
+      "test_intervals": 311,
+      "support_threshold": 0.5090111010899225,
+      "accepted_fraction": 0.4983922829581994
+    }
+  ],
+  "limitations": [
+    "fixed small pilot; not an external efficacy claim",
+    "no survival coverage guarantees",
+    "source block separation does not establish spatial independence",
+    "fixed epochs; target metrics never select hyperparameters",
+    "M0 is a small neural baseline, not the frozen v3.7 spline baseline",
+    "uncertainty ensembles, temporal dropout and second system not implemented"
+  ]
+}

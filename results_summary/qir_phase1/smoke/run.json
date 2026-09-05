@@ -1,0 +1,157 @@
+{
+  "evidence": "synthetic_engineering_smoke_only",
+  "seed": 2026,
+  "config": {
+    "stage": "phase1_engineering_and_small_real_pilot",
+    "block_size_m": 256.0,
+    "scales_m": [
+      32.0,
+      64.0,
+      128.0
+    ],
+    "image_size": 16,
+    "pixels_per_block": 8,
+    "hidden": 24,
+    "epochs": 25,
+    "learning_rate": 0.01
+  },
+  "input_sha256": {},
+  "code_sha256": {
+    "src\\qir_event\\__init__.py": "3acfa389192e4fcc106787593fc02bb2721f3d95163ac6e93ef95ef052787446",
+    "src\\qir_event\\events.py": "490b59956dac8add6836adfdc845a4533edd4fec0e2c1c668a9d3841899be048",
+    "src\\qir_event\\experiment.py": "0cf62e0f6328d2a68ecb56a3cc01544ed072cf0faab9a708acf1a49af7c13f92",
+    "src\\qir_event\\marsh_adapter.py": "1462281c3fc7c9f17f1bd58a22c2b9bd8f20ae9c8228f74a21b71b3c0c608376",
+    "src\\qir_event\\model.py": "45ce4d406a5d892b194ddf128ea41273bdc0ac60eac3afdf6cc21a29cea7bb46",
+    "src\\qir_event\\validation.py": "de0f5af7022db03cb8bb7482bfdba34d38306250a5b621fe996614aa444931a4",
+    "configs/qir_phase1.json": "f58e158c8ef3e26dd88edf3a0ba27aea4264efa22728e379331b1830b5e4fa80"
+  },
+  "code_commit": "945804cf54c34d54bb017ec0e132ee2acbd7f462",
+  "dirty_worktree": true,
+  "python": "3.12.14",
+  "torch": "2.14.0+cpu",
+  "numpy": "2.5.2",
+  "training_losses": {
+    "fixture_A->fixture_B:baseline": {
+      "first": 1.6223747730255127,
+      "last": 0.6206769943237305,
+      "epochs": 25
+    },
+    "fixture_A->fixture_B:quality": {
+      "first": 0.671043872833252,
+      "last": 0.5447760224342346,
+      "epochs": 25
+    },
+    "fixture_A->fixture_B:spatial": {
+      "first": 0.6067090630531311,
+      "last": 0.545349657535553,
+      "epochs": 25
+    },
+    "fixture_A->fixture_B:qir": {
+      "first": 0.6067090630531311,
+      "last": 0.5446604490280151,
+      "epochs": 25
+    },
+    "fixture_B->fixture_A:baseline": {
+      "first": 1.7384556233882904,
+      "last": 0.6114135608077049,
+      "epochs": 25
+    },
+    "fixture_B->fixture_A:quality": {
+      "first": 0.6652589440345764,
+      "last": 0.5132893323898315,
+      "epochs": 25
+    },
+    "fixture_B->fixture_A:spatial": {
+      "first": 0.5961538851261139,
+      "last": 0.5136547386646271,
+      "epochs": 25
+    },
+    "fixture_B->fixture_A:qir": {
+      "first": 0.5961538851261139,
+      "last": 0.5144017934799194,
+      "epochs": 25
+    }
+  },
+  "n_intervals": 176,
+  "n_episodes": 90,
+  "splits": [
+    {
+      "source": "fixture_A",
+      "target": "fixture_B",
+      "split_blocks": {
+        "train": [
+          "fixture_A:0:2",
+          "fixture_A:1:0",
+          "fixture_A:1:1",
+          "fixture_A:1:2",
+          "fixture_A:2:1",
+          "fixture_A:2:2"
+        ],
+        "calibration": [
+          "fixture_A:0:0",
+          "fixture_A:0:1",
+          "fixture_A:2:0"
+        ],
+        "test": [
+          "fixture_B:0:0",
+          "fixture_B:0:1",
+          "fixture_B:0:2",
+          "fixture_B:1:0",
+          "fixture_B:1:1",
+          "fixture_B:1:2",
+          "fixture_B:2:0",
+          "fixture_B:2:1",
+          "fixture_B:2:2"
+        ]
+      },
+      "train_intervals": 46,
+      "calibration_intervals": 25,
+      "test_intervals": 105,
+      "support_threshold": 2.226639925488271,
+      "accepted_fraction": 0.9142857142857143
+    },
+    {
+      "source": "fixture_B",
+      "target": "fixture_A",
+      "split_blocks": {
+        "train": [
+          "fixture_B:0:2",
+          "fixture_B:1:0",
+          "fixture_B:1:1",
+          "fixture_B:1:2",
+          "fixture_B:2:1",
+          "fixture_B:2:2"
+        ],
+        "calibration": [
+          "fixture_B:0:0",
+          "fixture_B:0:1",
+          "fixture_B:2:0"
+        ],
+        "test": [
+          "fixture_A:0:0",
+          "fixture_A:0:1",
+          "fixture_A:0:2",
+          "fixture_A:1:0",
+          "fixture_A:1:1",
+          "fixture_A:1:2",
+          "fixture_A:2:0",
+          "fixture_A:2:1",
+          "fixture_A:2:2"
+        ]
+      },
+      "train_intervals": 79,
+      "calibration_intervals": 26,
+      "test_intervals": 71,
+      "support_threshold": 2.334920246939567,
+      "accepted_fraction": 1.0
+    }
+  ],
+  "limitations": [
+    "fixed small pilot; not an external efficacy claim",
+    "no survival coverage guarantees",
+    "source block separation does not establish spatial independence",
+    "fixed epochs; target metrics never select hyperparameters",
+    "M0 is a small neural baseline, not the frozen v3.7 spline baseline",
+    "uncertainty ensembles, temporal dropout and second system not implemented"
+  ]
+}
