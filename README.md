@@ -8,9 +8,9 @@ This repository presents two independent research projects at the same level. Th
 
 A reproducible pilot using Himawari satellite observations and environmental context to study tropical cyclogenesis. The current case-control sample is small; the project does not claim a validated operational predictor. See the [project README](typhoon/README.md), [code](typhoon/src/), and [pilot reports](typhoon/outputs/reports/).
 
-### [Spatial SEIR critical-slowing early warning | 空间 SEIR 临界慢化预警](seir/)
+### [Ecological critical slowing and spatial SEIR | 生态临界慢化与空间 SEIR](seir/)
 
-Spatial SEIR simulation, patch-based signals, baseline and deep-model scripts, and historical result summaries. The historical experimental claims have not been independently rerun for this public snapshot. See the [project README](seir/README.md), [code](seir/src/), [experiments](seir/scripts/), and [result summaries](seir/results_summary/).
+The current research studies direct ecological recovery after disturbance. Earlier spatial SEIR and synthetic-vegetation work remains available as method-development history. See the [project README](seir/README.md), [version index](seir/VERSIONS.md), [code](seir/src/), [analysis scripts](seir/scripts/), and [selected reports](seir/results/). Historical large-data experiments have not been independently rerun for this public repository.
 
 ## Scope
 

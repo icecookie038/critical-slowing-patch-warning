@@ -1,0 +1,17 @@
+{
+  "published_datasets_run": 4,
+  "clements_transition_set_exact": true,
+  "clements_trait_composite_true_positive_rate": 0.625,
+  "clements_trait_composite_false_positive_rate": 0.1,
+  "dai_cv_positive_for_both_drivers": true,
+  "rindi_expected_spatial_metrics_positive": 4,
+  "rindi_expected_spatial_metrics_total": 4,
+  "rindi_expected_spatial_metrics_block_significant": 3,
+  "rindi_low_frequency_replication": "positive direction; blocked p > 0.05",
+  "rindi_positive_patch_descriptors": 4,
+  "rindi_patch_descriptors_total": 4,
+  "sampling_precision_contributes": true,
+  "sampling_precision_is_sole_explanation": false,
+  "patch_primary_detector": "NO-GO",
+  "patch_spatial_explanation": "GO, descriptive and sensitivity-audited"
+}

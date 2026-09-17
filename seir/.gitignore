@@ -4,24 +4,11 @@ __pycache__/
 *.pyo
 *.pyd
 .ipynb_checkpoints/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
 
 # Virtual environment
 .venv/
 venv/
 env/
-
-# Local credentials and machine-specific settings
-.env
-.env.*
-!.env.example
-*.pem
-*.p12
-*.pfx
-id_rsa
-id_ed25519
 
 # PyCharm / VSCode
 .idea/
@@ -36,10 +23,10 @@ data/cache/
 # Results
 results/
 results_baselines/
-runs/
 *.png
 *.jpg
 *.jpeg
+*.pdf
 
 # Model weights
 models/*.pth
@@ -61,3 +48,35 @@ scripts/data/
 scripts/results/
 scripts/models/
 scripts/results_baselines/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Generated data
+data/processed/
+*.npz
+
+# Model checkpoints
+models/
+*.pth
+*.pt
+
+# Experiment logs
+runs/
+wandb/
+
+# Local result folders
+results_feature_importance/
+results_mechanism/
+results_robustness/
+results/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temporary files
+*.tmp
+.DS_Store

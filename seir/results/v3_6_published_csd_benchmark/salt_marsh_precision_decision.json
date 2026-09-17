@@ -1,0 +1,40 @@
+{
+  "resolutions_tested_m": [
+    0.25,
+    1.0,
+    5.0,
+    10.0
+  ],
+  "resolutions_passing_two_way_deviance": [
+    5.0
+  ],
+  "resolutions_passing_two_way_deviance_and_log_rmse": [],
+  "five_metre_alphas_tested": [
+    0.01,
+    0.1,
+    1.0,
+    10.0
+  ],
+  "five_metre_alphas_passing_two_way_deviance": [
+    0.1
+  ],
+  "five_metre_block_widths_passing_two_way_deviance": [
+    64.0,
+    128.0
+  ],
+  "candidate_5m_128m_alphas_passing_both_losses": [
+    0.01,
+    0.1
+  ],
+  "candidate_5m_128m_supported_blocks": {
+    "Hellegat": 10,
+    "Paulina": 15
+  },
+  "candidate_5m_128m_data_requirement_pass": false,
+  "candidate_5m_128m_status": "exploratory; pre-register for new data",
+  "higher_native_resolution_rescues_patch_model": false,
+  "scale_sensitivity_present": true,
+  "precision_is_sole_explanation": false,
+  "patch_primary_detector": "NO-GO",
+  "patch_spatial_explanation": "GO"
+}

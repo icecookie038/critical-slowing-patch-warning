@@ -2,11 +2,13 @@ numpy
 scipy
 pandas
 matplotlib
+pillow
 scikit-learn
 torch
 torchvision
 tqdm
 networkx
-statsmodels
 pyyaml
 tabulate
+xlrd
+scikit-misc
