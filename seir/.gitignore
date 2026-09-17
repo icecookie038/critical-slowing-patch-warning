@@ -1,0 +1,63 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Local credentials and machine-specific settings
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+
+# PyCharm / VSCode
+.idea/
+.vscode/
+
+# Large generated data
+data/*.npz
+data/*.npy
+data/raw/
+data/cache/
+
+# Results
+results/
+results_baselines/
+runs/
+*.png
+*.jpg
+*.jpeg
+
+# Model weights
+models/*.pth
+models/*.pt
+models/*.pkl
+models/*.joblib
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Ignore all model outputs
+models/
+# Script-generated experiment data
+scripts/data/
+scripts/results/
+scripts/models/
+scripts/results_baselines/
