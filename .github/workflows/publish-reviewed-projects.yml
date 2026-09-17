@@ -1,0 +1,65 @@
+name: Publish reviewed research projects
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the reviewed public files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import shutil
+          import tempfile
+          import zipfile
+          from pathlib import Path, PurePosixPath
+
+          package = Path('research_projects_public_candidate.zip')
+          expected_sha256 = 'ca8d7e2131a12374aa4ccc73b9ae2cf4e39a85486090c2ac8d82a8c4e241a687'
+          actual_sha256 = hashlib.sha256(package.read_bytes()).hexdigest()
+          if actual_sha256 != expected_sha256:
+              raise SystemExit('The uploaded package differs from the reviewed package')
+
+          with zipfile.ZipFile(package) as archive:
+              names = archive.namelist()
+              if len(names) != 140 or len(set(names)) != 140:
+                  raise SystemExit('Unexpected package file list')
+              for name in names:
+                  path = PurePosixPath(name)
+                  if (path.is_absolute() or '..' in path.parts or
+                          path.parts[0] not in {'.github', 'README.md', 'seir', 'typhoon'} or
+                          'q3' in name.lower() or 'q4' in name.lower() or
+                          'cumcm' in name.lower()):
+                      raise SystemExit('Unsafe or unexpected path: ' + name)
+              if not {'README.md', 'seir/README.md', 'typhoon/README.md'}.issubset(names):
+                  raise SystemExit('Missing a project entry point')
+              staging = Path(tempfile.mkdtemp(prefix='reviewed-projects-'))
+              archive.extractall(staging)
+
+          for entry in Path('.').iterdir():
+              if entry.name in {'.git', '.github', package.name}:
+                  continue
+              if entry.is_dir():
+                  shutil.rmtree(entry)
+              else:
+                  entry.unlink()
+          for entry in staging.iterdir():
+              if entry.name != '.github':
+                  shutil.move(str(entry), str(Path('.') / entry.name))
+          package.unlink()
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --stat
+          git commit -m "Publish SEIR and typhoon as separate public projects"
+          git push origin HEAD:main
+
