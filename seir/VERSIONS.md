@@ -31,8 +31,8 @@ branches. There are likewise no separately verified v3.0–v3.4 source
 snapshots. The v3.5–v3.7 material was recovered in one commit
 from files that had been untracked in the earlier working tree. See
 [`docs/RECOVERY_v3_7_2026-09-05.md`](docs/RECOVERY_v3_7_2026-09-05.md) for
-provenance and limits. Version links point to the reviewed history branch's
-commits and become available when that branch is published.
+provenance and limits. Version links point to commits on the reviewed history
+branch.
 
 The public history excludes the separate 2026 modeling Problem B question 3
 and question 4 material.
