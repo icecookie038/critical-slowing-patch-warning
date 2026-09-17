@@ -24,8 +24,11 @@ The identifiable version checkpoints are:
 - [v2.9](https://github.com/icecookie038/critical-slowing-patch-warning/tree/65c22fbb1459b41a4efbc69d99354ad60e859588): manuscript integration.
 - [v3.5–v3.7 recovered snapshot](https://github.com/icecookie038/critical-slowing-patch-warning/tree/5315b3bbdbfe9d8561f911bf5ec53ad72a1e0aa4): direct ecological recovery, published-data precision benchmark, and time-safe event-level survival analysis.
 
-There are no separately verified source snapshots for v2.1 or v3.0–v3.4 in
-the recovered history. The v3.5–v3.7 material was recovered in one commit
+The [v2.0 summary](docs/v2_0_vegetation_ca_summary.md) describes v2.1 as a
+**proposed next step** involving remote-sensing or pine-wilt-disease data. No
+separate v2.1 implementation or source snapshot is present in the recovered
+branches. There are likewise no separately verified v3.0–v3.4 source
+snapshots. The v3.5–v3.7 material was recovered in one commit
 from files that had been untracked in the earlier working tree. See
 [`docs/RECOVERY_v3_7_2026-09-05.md`](docs/RECOVERY_v3_7_2026-09-05.md) for
 provenance and limits. Version links point to the reviewed history branch's
